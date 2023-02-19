@@ -1,0 +1,68 @@
+﻿<Page x:Class="AISOptimization.VIews.Pages.OptimizationPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:local="clr-namespace:AISOptimization.VIews.Pages"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      xmlns:controls="clr-namespace:AISOptimization.Controls"
+      d:DataContext="{d:DesignInstance local:OptimizationPage}"
+      ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
+      ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+      mc:Ignorable="d"
+      d:DesignHeight="450"
+      d:DesignWidth="800"
+      Title="OptimizationPage" >
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <StackPanel >
+            <ui:DynamicScrollViewer>
+                <StackPanel>
+                    <ui:Card >
+                        <TextBlock Text="Ввод функции"/>
+                        <ui:Card.Footer>
+                            
+                                <controls:LabeledControlPresenter HeaderText="Целевая функция">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                    <ui:TextBox x:Name="ObjectiveFunctionInput" PlaceholderText="Введите целевую функцию"
+                                                ClearButtonEnabled="False"
+                                                Text="{Binding ViewModel.ObjectiveFunctionInput}"/>
+                                                <ui:Button Grid.Column="1" VerticalAlignment="Bottom"
+                                                           Content="Ввод" Icon="Add16"
+                                                           Margin="8,0,0,0" Height="34"/>
+                                    </Grid>
+
+                                </controls:LabeledControlPresenter>
+                        </ui:Card.Footer>
+                        
+                    </ui:Card>
+                   
+                    <ui:Card >
+                        <TextBlock Text="Ограничения"/>
+                        <ui:Card.Footer>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <controls:LabeledControlPresenter HeaderText="Ограничения" >
+                                    <ui:TextBox x:Name="LimitationInput" PlaceholderText="Введите ограничение" ClearButtonEnabled="False"/>
+                                </controls:LabeledControlPresenter>
+                                <ui:Button Grid.Column="1" VerticalAlignment="Bottom" Content="Добавить" Icon="Add16" Margin="8,0,0,0" Height="34"/>
+                                
+                            </Grid>
+                        </ui:Card.Footer>
+                        
+                    </ui:Card>
+                </StackPanel>
+            </ui:DynamicScrollViewer>
+        </StackPanel>
+    </Grid>
+</Page>

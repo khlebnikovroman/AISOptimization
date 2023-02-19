@@ -5,6 +5,7 @@
      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
      xmlns:local="clr-namespace:AISOptimization"
+     xmlns:controls="clr-namespace:AISOptimization.Controls"
      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
      mc:Ignorable="d"
      
@@ -33,6 +34,11 @@
             Grid.Row="1">
         </ui:NavigationView>
         
+        <ui:Dialog
+            x:Name="RootDialog"
+            Grid.Row="1"
+            
+            Padding="0,42,0,0" />
         <ui:TitleBar
             Title="ПРИЛОЖЕНИЕ"
             Grid.Row="0">

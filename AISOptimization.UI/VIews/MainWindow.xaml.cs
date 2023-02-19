@@ -33,22 +33,19 @@ namespace AISOptimization
     {
         public MainWindowVM ViewModel { get; set; }
         
-        public MainWindow(MainWindowVM vm,IPageService pageService,INavigationService navigationService)
+        public MainWindow(MainWindowVM vm,IPageService pageService,INavigationService navigationService ,IDialogService dialogService)
         {
             ViewModel = vm;
             DataContext = this;
             InitializeComponent();
             SetPageService(pageService);
+            dialogService.SetDialogControl(RootDialog);
             navigationService.SetNavigationControl(RootNavigation);
             RootNavigation.MenuItems=  new ObservableCollection<object>
             {
                 new NavigationViewItem()
                 {
-                    TargetPageType = typeof(Example)
-                },
-                new NavigationViewItem()
-                {
-                    TargetPageType = typeof(Example2)
+                    TargetPageType = typeof(OptimizationPage)
                 },
             };
         }
