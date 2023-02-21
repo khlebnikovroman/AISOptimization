@@ -6,12 +6,16 @@
              xmlns:local="clr-namespace:AISOptimization.VIews.Pages"
              xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
              mc:Ignorable="d"
-             Height="800"
-             Width="900"
              ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
              ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
              d:DataContext="{d:DesignInstance local:SelectVariableParametersControl}"
              d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <StackPanel x:Key="Footer1" Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Stretch">
+            <ui:Button Command="{Binding ViewModel.OnSelectCommand}" Content="Выбрать" Appearance="Primary" Icon="Add16"/>
+            <ui:Button Command="{Binding ViewModel.OnCancelCommand}" Content="Отмена" Appearance="Secondary" Icon="Prohibited16"/>
+        </StackPanel>
+    </UserControl.Resources>
     
     <Grid>
         <Grid.RowDefinitions>
@@ -19,19 +23,29 @@
             <RowDefinition Height="40"/>
         </Grid.RowDefinitions>
         <StackPanel>
-            <ui:DataGrid ItemsSource="{Binding ViewModel.AllParameters}">
-                <ui:DataGrid.Columns>
-                    <DataGridTextColumn Header="Параметр" Binding="{Binding ParameterName}"/>
-                    <DataGridCheckBoxColumn Header="Варьируемый?" Binding="{Binding IsVariable}"/>
-                </ui:DataGrid.Columns>
-            </ui:DataGrid>
-            
+            <DataGrid ItemsSource="{Binding ViewModel.AllParameters, Mode=TwoWay}"
+                         CanUserAddRows="False"
+                         CanUserDeleteRows="False"
+                         AutoGenerateColumns="False">
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn Header="Параметр">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding ParameterName}" IsEnabled="False"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="Варьируемый?">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding IsVariable, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
         </StackPanel>
         
-        <StackPanel Grid.Row="1" Orientation="Horizontal" >
-            <ui:Button Command="{Binding ViewModel.OnSelectCommand}" Content="Выбрать" Appearance="Primary" Icon="Add16"/>
-            <ui:Button Command="{Binding ViewModel.OnCancelCommand}" Content="Отмена" Appearance="Secondary" Icon="Prohibited16"/>
-        </StackPanel>
         
     </Grid>
 </UserControl>

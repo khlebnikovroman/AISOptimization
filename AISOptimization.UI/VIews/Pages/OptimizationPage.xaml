@@ -34,7 +34,9 @@
                                     <ui:TextBox x:Name="ObjectiveFunctionInput" PlaceholderText="Введите целевую функцию"
                                                 ClearButtonEnabled="False"
                                                 Text="{Binding ViewModel.ObjectiveFunctionInput}"/>
-                                                <ui:Button Grid.Column="1" VerticalAlignment="Bottom"
+                                                <ui:Button Grid.Column="1"
+                                                           Command="{Binding ViewModel.InputObjectiveFunction}"
+                                                           VerticalAlignment="Bottom"
                                                            Content="Ввод" Icon="Add16"
                                                            Margin="8,0,0,0" Height="34"/>
                                     </Grid>
@@ -44,22 +46,76 @@
                         
                     </ui:Card>
                    
-                    <ui:Card >
-                        <TextBlock Text="Ограничения"/>
+                    <ui:Card>
+                        <TextBlock Text="Статические параметры"/>
                         <ui:Card.Footer>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <controls:LabeledControlPresenter HeaderText="Ограничения" >
-                                    <ui:TextBox x:Name="LimitationInput" PlaceholderText="Введите ограничение" ClearButtonEnabled="False"/>
-                                </controls:LabeledControlPresenter>
-                                <ui:Button Grid.Column="1" VerticalAlignment="Bottom" Content="Добавить" Icon="Add16" Margin="8,0,0,0" Height="34"/>
-                                
-                            </Grid>
+                            <ListBox ItemsSource="{Binding ViewModel.OptimizationProblem.StaticVariables}">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition/>
+                                            </Grid.ColumnDefinitions>
+                                            <Label Grid.Column="0" Content="{Binding Key}" VerticalAlignment="Center"
+                                                   HorizontalAlignment="Center"
+                                                   HorizontalContentAlignment="Center"
+                                                   VerticalContentAlignment="Center"
+                                                   ContentStringFormat=" {0} = "/>
+                                            <ui:TextBox Grid.Column="1" Text="{Binding Value}" Margin="9,0,0,0"/>
+
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
                         </ui:Card.Footer>
-                        
+                    </ui:Card>
+                    <ui:Card>
+                        <TextBlock Text="Ограничения первого рода"/>
+                        <ui:Card.Footer>
+                            <ListBox ItemsSource="{Binding ViewModel.OptimizationProblem.IndependentVariables}">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition/>
+                                            </Grid.ColumnDefinitions>
+                                            <ui:TextBox Grid.Column="0" Text="{Binding FirstRoundRestriction.Min}"/>
+                                            <ComboBox Grid.Column="1" SelectedItem="{Binding FirstRoundRestriction.LessSign}"
+                                                      ItemsSource="{Binding FirstRoundRestriction.Signs}"/>
+                                            <Label Grid.Column="2" Content="{Binding Key}"/>
+                                            <ComboBox Grid.Column="3" SelectedItem="{Binding FirstRoundRestriction.BiggerSign}"
+                                                      ItemsSource="{Binding FirstRoundRestriction.Signs}"/>
+                                            <ui:TextBox Grid.Column="4" Text="{Binding FirstRoundRestriction.Max}"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </ui:Card.Footer>
+                    </ui:Card><ui:Card>
+                        <TextBlock Text="Ограничения второго рода"/>
+                        <ui:Card.Footer>
+                            <ListBox ItemsSource="{Binding ViewModel.OptimizationProblem.SecondRoundRestrictions}">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition/>
+                                            </Grid.ColumnDefinitions>
+                                            <ui:TextBox Grid.Column="0" Text="{Binding  Expression}"/>
+                                            <!-- <Label Grid.Column="1" Content="{Binding Key}"/> -->
+                                            <!-- <ui:TextBox Grid.Column="2" Text="{Binding FirstRoundRestriction.Max}"/> -->
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </ui:Card.Footer>
                     </ui:Card>
                 </StackPanel>
             </ui:DynamicScrollViewer>

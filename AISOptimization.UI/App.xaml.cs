@@ -59,16 +59,6 @@ namespace AISOptimization
             //navigationWindow.Navigate(typeof(Example));
             var nav = _container.Resolve<INavigationService>();
             nav.Navigate(typeof(OptimizationPage));
-            var ds = _container.Resolve<MyDialogService>();
-            var ee = _container.Resolve<SelectVariableParametersControl>();
-            var s = await ds.ShowDialog<SelectVariableParametersControl>();
-            Debug.WriteLine($"Конец диалога! {s}");
-            
-        }
-
-        public static T GetService<T>()
-        {
-            return _container.Resolve<T>();
         }
     }
 }

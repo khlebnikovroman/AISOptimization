@@ -5,7 +5,7 @@ using AISOptimization.Utils;
 
 namespace AISOptimization.VIews.Pages;
 
-public partial class SelectVariableParametersControl : IViewWithVM<SelectVariableParametersControlVM>
+public partial class SelectVariableParametersControl : IViewWithVM<SelectVariableParametersControlVM>, IDialogAware
 {
     public SelectVariableParametersControlVM ViewModel { get; set; }
 
@@ -16,9 +16,6 @@ public partial class SelectVariableParametersControl : IViewWithVM<SelectVariabl
         InitializeComponent();
     }
 
-    public object ViewModelObject
-    {
-        get => ViewModel;
-    }
+    public object Footer => Resources["Footer"];
 }
 

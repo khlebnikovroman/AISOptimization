@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 
 
-namespace AISOptimization;
+namespace WPF.Base;
 
 public class BaseVM: INotifyPropertyChanged
 {

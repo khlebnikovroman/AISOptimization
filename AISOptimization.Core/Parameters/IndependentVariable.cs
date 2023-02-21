@@ -1,10 +1,12 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
+using WPF.Base;
+
 
 namespace AISOptimization.Core;
 
-public class IndependentVariable:IVariable, INotifyPropertyChanged
+public class IndependentVariable:BaseVM, IVariable
 {
     public string Key { get; set; }
     private double _value;
@@ -22,11 +24,4 @@ public class IndependentVariable:IVariable, INotifyPropertyChanged
         }
     }
     public FirstRoundRestriction FirstRoundRestriction { get; set; }
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
-    
 }

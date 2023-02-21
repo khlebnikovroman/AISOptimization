@@ -7,11 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="org.matheval" Version="1.0.0.3" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\WPF.Base\WPF.Base.csproj" />
+      <PackageReference Include="PropertyChanged.Fody" Version="4.1.0" />
     </ItemGroup>
 
 </Project>

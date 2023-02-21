@@ -1,4 +1,7 @@
-﻿using AISOptimization.Services;
+﻿using AISOptimization.Core;
+using AISOptimization.Services;
+
+using WPF.Base;
 
 
 namespace AISOptimization.VIews.Pages;
@@ -11,11 +14,10 @@ public class OptimizationPageVM : BaseVM
     {
         _dialogService = dialogService;
     }
-    private string ObjectiveFunction { get; set; }
 
-    public string ObjectiveFunctionInput { get; set; }
-    
-    
+    public string ObjectiveFunctionInput { get; set; } = "a + b + c + d + e = 12";
+
+    public OptimizationProblem OptimizationProblem { get; set; }
     
     private RelayCommand _inputObjectiveFunction;
 
@@ -25,7 +27,7 @@ public class OptimizationPageVM : BaseVM
         {
             return _inputObjectiveFunction ??= new RelayCommand(async o =>
             {
-                var res = await _dialogService.ShowDialog<SelectVariableParametersControl>(ObjectiveFunctionInput);
+                OptimizationProblem = await _dialogService.ShowDialog<SelectVariableParametersControl>(ObjectiveFunctionInput) as OptimizationProblem;
             });
         }
     }

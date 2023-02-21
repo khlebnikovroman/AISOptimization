@@ -1,9 +1,11 @@
 ﻿using AISOptimization.Core.Collections;
 
+using WPF.Base;
+
 
 namespace AISOptimization.Core;
 
-public class Point
+public class Point: BaseVM
 {
     public Point()
     {

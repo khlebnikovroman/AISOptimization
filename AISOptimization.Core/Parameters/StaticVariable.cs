@@ -1,6 +1,9 @@
-﻿namespace AISOptimization.Core;
+﻿using WPF.Base;
 
-public class StaticVariable: IVariable
+
+namespace AISOptimization.Core;
+
+public class StaticVariable: BaseVM, IVariable
 {
     public string Key { get; set; }
     public double Value { get; set; }

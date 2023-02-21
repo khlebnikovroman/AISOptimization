@@ -22,4 +22,9 @@
       </Page>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\AISOptimization.Core\AISOptimization.Core.csproj" />
+      <ProjectReference Include="..\WPF.Base\WPF.Base.csproj" />
+    </ItemGroup>
+
 </Project>
