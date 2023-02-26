@@ -13,11 +13,11 @@ public enum FirstRoundRestrictionSatisfactory
     BiggerThanMax
 }
 
-public class FirstRoundRestriction: BaseVM
+public class FirstRoundRestriction: BaseVM , ICloneable 
 {
     public static List<string> Signs { get; } = new() {"<", "≤"};
-    public double Max { get; set; }
-    public double Min { get; set; }
+    public double Max { get; set; } = 1;
+    public double Min { get; set; } = 0;
     private string _lessSign = "<";
 
     public string LessSign
@@ -93,5 +93,10 @@ public class FirstRoundRestriction: BaseVM
         }
        
         return FirstRoundRestrictionSatisfactory.OK;
+    }
+
+    public object Clone()
+    {
+        return MemberwiseClone();
     }
 }

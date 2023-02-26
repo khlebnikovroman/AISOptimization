@@ -10,6 +10,7 @@
                 <ui:ThemesDictionary Theme="Dark" />
                 <ui:ControlsDictionary />
                 <ResourceDictionary Source="Controls/LabeledControlPresenter.xaml" />
+                <ResourceDictionary Source="VIews/Styles/ComboBoxWithoutArrow.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

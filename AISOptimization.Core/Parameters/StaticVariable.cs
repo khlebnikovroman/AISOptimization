@@ -6,5 +6,18 @@ namespace AISOptimization.Core;
 public class StaticVariable: BaseVM, IVariable
 {
     public string Key { get; set; }
-    public double Value { get; set; }
+    private double _value;
+
+    public double Value
+    {
+        get
+        {
+            return _value;
+        }
+        set
+        {
+            _value = value;
+            OnPropertyChanged();
+        }
+    }
 }

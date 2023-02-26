@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 
 using AISOptimization.Core;
+using AISOptimization.Core.Collections;
 using AISOptimization.Utils;
 
 using WPF.Base;
@@ -12,9 +13,10 @@ using WPF.Base;
 
 namespace AISOptimization.VIews.Pages;
 
-public class CustomizableParameter : BaseVM
+public class CustomizableParameter : BaseVM, IVariable
 {
-    public string ParameterName { get; set; }
+    public string Key { get; set; }
+    public double Value { get; set; }
     public bool IsVariable { get; set; }
 }
 public class SelectVariableParametersControlVM : BaseVM, IDataHolder, IResultHolder, IInteractionAware
@@ -32,12 +34,11 @@ public class SelectVariableParametersControlVM : BaseVM, IDataHolder, IResultHol
         set
         {
             _function = (string) value;
-            _optimizationProblem = new OptimizationProblem(_function);
             AllParameters = new ObservableCollection<CustomizableParameter>();
 
-            foreach (var variable in _optimizationProblem.Function.Expression.getVariables())
+            foreach (var variable in OptimizationProblem.GetVariables(_function))
             {
-                AllParameters.Add(new CustomizableParameter(){IsVariable = false, ParameterName = variable});
+                AllParameters.Add(new CustomizableParameter(){IsVariable = false, Key = variable});
             }
         }
     }
@@ -54,14 +55,13 @@ public class SelectVariableParametersControlVM : BaseVM, IDataHolder, IResultHol
                 var independentVariables = AllParameters
                                            .Where(p => p.IsVariable)
                                            .Select(p => new IndependentVariable()
-                                                       {Key = p.ParameterName, FirstRoundRestriction = new FirstRoundRestriction()});
+                                                       {Key = p.Key, FirstRoundRestriction = new FirstRoundRestriction()});
                 var staticVariables = AllParameters
                                            .Where(p => !p.IsVariable)
                                            .Select(p => new StaticVariable()
-                                                       {Key = p.ParameterName});
+                                                       {Key = p.Key});
 
-                _optimizationProblem.IndependentVariables = new ObservableCollection<IndependentVariable>(independentVariables);
-                _optimizationProblem.StaticVariables = new ObservableCollection<StaticVariable>(staticVariables);
+                _optimizationProblem = new OptimizationProblem(_function, independentVariables, staticVariables);
                 Result = _optimizationProblem;
                 FinishInteraction();
             });
@@ -81,5 +81,4 @@ public class SelectVariableParametersControlVM : BaseVM, IDataHolder, IResultHol
             });
         }
     }
-
 }

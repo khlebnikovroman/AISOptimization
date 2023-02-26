@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using System.Windows;
+using System.Windows.Controls;
 
 using AISOptimization.Utils;
 
@@ -7,8 +8,6 @@ namespace AISOptimization.VIews.Pages;
 
 public partial class SelectVariableParametersControl : IViewWithVM<SelectVariableParametersControlVM>, IDialogAware
 {
-    public SelectVariableParametersControlVM ViewModel { get; set; }
-
     public SelectVariableParametersControl(SelectVariableParametersControlVM viewModel)
     {
         ViewModel = viewModel;
@@ -16,6 +15,19 @@ public partial class SelectVariableParametersControl : IViewWithVM<SelectVariabl
         InitializeComponent();
     }
 
-    public object Footer => Resources["Footer"];
+    public object Footer
+    {
+        get
+        {
+            var footer = Resources["Footer"] as StackPanel;
+
+            footer.DataContext ??= this;
+
+            return footer;
+        }
+    }
+
+    public SelectVariableParametersControlVM ViewModel { get; set; }
 }
+
 

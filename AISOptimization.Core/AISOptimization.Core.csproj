@@ -7,7 +7,16 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="MoreLinq.Source.MoreEnumerable.MaxBy" Version="1.0.2">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+      <PackageReference Include="MoreLinq.Source.MoreEnumerable.MinBy" Version="1.0.2">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
       <PackageReference Include="org.matheval" Version="1.0.0.3" />
+      <PackageReference Include="PropertyChanged.Fody" Version="4.1.0" />
     </ItemGroup>
 
     <ItemGroup>

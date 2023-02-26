@@ -10,42 +10,46 @@
              ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
              d:DataContext="{d:DesignInstance local:SelectVariableParametersControl}"
              d:DesignHeight="300" d:DesignWidth="300">
+
     <UserControl.Resources>
-        <StackPanel x:Key="Footer1" Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Stretch">
-            <ui:Button Command="{Binding ViewModel.OnSelectCommand}" Content="Выбрать" Appearance="Primary" Icon="Add16"/>
-            <ui:Button Command="{Binding ViewModel.OnCancelCommand}" Content="Отмена" Appearance="Secondary" Icon="Prohibited16"/>
+        <StackPanel x:Key="Footer" Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Stretch">
+            <ui:Button Command="{Binding ViewModel.OnSelectCommand}" Content="Выбрать" Appearance="Primary"
+                       Icon="Add16" />
+            <ui:Button Command="{Binding ViewModel.OnCancelCommand}" Content="Отмена" Appearance="Secondary"
+                       Icon="Prohibited16" />
         </StackPanel>
     </UserControl.Resources>
-    
+
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition/>
-            <RowDefinition Height="40"/>
+            <RowDefinition />
+            <RowDefinition Height="40" />
         </Grid.RowDefinitions>
         <StackPanel>
             <DataGrid ItemsSource="{Binding ViewModel.AllParameters, Mode=TwoWay}"
-                         CanUserAddRows="False"
-                         CanUserDeleteRows="False"
-                         AutoGenerateColumns="False">
+                      CanUserAddRows="False"
+                      CanUserDeleteRows="False"
+                      AutoGenerateColumns="False">
                 <DataGrid.Columns>
                     <DataGridTemplateColumn Header="Параметр">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding ParameterName}" IsEnabled="False"/>
+                                <TextBlock Text="{Binding Key}" IsEnabled="False" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
                     <DataGridTemplateColumn Header="Варьируемый?">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <CheckBox IsChecked="{Binding IsVariable, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                                <CheckBox
+                                    IsChecked="{Binding IsVariable, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
                 </DataGrid.Columns>
             </DataGrid>
         </StackPanel>
-        
-        
+
+
     </Grid>
 </UserControl>

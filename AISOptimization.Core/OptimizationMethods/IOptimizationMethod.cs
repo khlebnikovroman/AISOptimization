@@ -2,5 +2,5 @@
 
 public interface IOptimizationMethod
 {
-    
+    public Point GetBestXPoint();
 }
