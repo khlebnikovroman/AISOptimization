@@ -21,33 +21,16 @@ public class OptimizationPageVM : BaseVM, INotifyDataErrorInfo
 {
     private readonly MyDialogService _dialogService;
     private readonly AbstractValidator<OptimizationPageVM> _validator;
-    private readonly ErrorsViewModel _errorsViewModel = new ErrorsViewModel();
 
     public OptimizationPageVM(MyDialogService dialogService,AbstractValidator<OptimizationPageVM> validator)
     {
         _dialogService = dialogService;
         _validator = validator;
-        _errorsViewModel.ErrorsChanged += ErrorsViewModel_ErrorsChanged;
-        PropertyChanged += (sender, args) => ErrorsChanged(sender,new DataErrorsChangedEventArgs(args.PropertyName));
     }
 
     public string ObjectiveParameter { get; set; } = "z";
 
-    public string ObjectiveFunctionInput
-    {
-        get => _objectiveFunctionInput;
-        set
-        {
-            _objectiveFunctionInput = value;
-
-            _errorsViewModel.ClearErrors(nameof(ObjectiveFunctionInput));
-            if (_objectiveFunctionInput != "123")
-            {
-                _errorsViewModel.AddError(nameof(ObjectiveFunctionInput), "ОШИБКА");
-            }
-            OnPropertyChanged();
-        }
-    }
+    public string ObjectiveFunctionInput { get; set; } = "x + f - d";
 
     public OptimizationProblem OptimizationProblem { get; set; }
     
@@ -61,6 +44,11 @@ public class OptimizationPageVM : BaseVM, INotifyDataErrorInfo
             {
                 OptimizationProblem = await _dialogService.ShowDialog<SelectVariableParametersControl>(ObjectiveFunctionInput) as OptimizationProblem;
 
+                foreach (var independentVariable in OptimizationProblem.VectorX)
+                {
+                    independentVariable.FirstRoundRestriction.PropertyChanged += (sender, args) =>
+                        ErrorsChanged?.Invoke(sender, new DataErrorsChangedEventArgs(args.PropertyName));
+                }
                 if (OptimizationProblem != null)
                 {
                     OptimizationProblem.Extremum = Extremum.Max;
@@ -71,7 +59,6 @@ public class OptimizationPageVM : BaseVM, INotifyDataErrorInfo
 
 
     private RelayCommand _optimizeCommand;
-    private string _objectiveFunctionInput = "a + b + c + d +ee";
 
     public RelayCommand OptimizeCommand
     {
@@ -104,85 +91,23 @@ public class OptimizationPageVM : BaseVM, INotifyDataErrorInfo
             });
         }
     }
-
-    // public string Error { get
-    // {
-    //     if (_validator != null)
-    //     {
-    //         var results = _validator.Validate(this);
-    //         if (results != null && results.Errors.Any())
-    //         {
-    //             var errors = string.Join(Environment.NewLine, results.Errors.Select(x => x.ErrorMessage).ToArray());
-    //             return errors;
-    //         }
-    //     }
-    //     return string.Empty;
-    // } }
-    //
-    // public string this[string columnName]
-    // {
-    //     get
-    //     {
-    //         var firstOrDefault = _validator.Validate(this).Errors.FirstOrDefault(lol => lol.PropertyName == columnName);
-    //         if (firstOrDefault != null)
-    //             return _validator != null ? firstOrDefault.ErrorMessage : "";
-    //         return "";
-    //     }
-    // }
-
-    // public IEnumerable GetErrors(string? propertyName)
-    // {
-    //     return _validator.Validate(this).Errors.Where(e => e.PropertyName == propertyName);
-    // }
-    //
-    // public bool HasErrors => _validator.Validate(this).IsValid;
-    // public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
-    // public string Error {
-    //     get
-    //     {
-    //         if (_validator != null)
-    //         {
-    //             var results = _validator.Validate(this);
-    //             if (results != null && results.Errors.Any())
-    //             {
-    //                 var errors = string.Join(Environment.NewLine, results.Errors.Select(x => x.ErrorMessage).ToArray());
-    //                 return errors;
-    //             }
-    //         }
-    //         return string.Empty;
-    //     }
-    // }
-    //
-    // public string this[string columnName] {
-    //     get
-    //     {
-    //         var firstOrDefault = _validator.Validate(this).Errors.FirstOrDefault(lol => lol.PropertyName == columnName);
-    //         if (firstOrDefault != null)
-    //             return _validator != null ? firstOrDefault.ErrorMessage : "";
-    //         return "";
-    //     }
-    // }
+    
     public IEnumerable GetErrors(string? propertyName)
     {
-        return _errorsViewModel.GetErrors(propertyName);
+        var errors = _validator.Validate(this).Errors.Where(e=>e.PropertyName==propertyName);
+        return errors;
     }
 
     public bool HasErrors
     {
         get
         {
-            var isValid = _validator.Validate(this).IsValid;
-
-            return _errorsViewModel.HasErrors;
-            return isValid;
+            var res = _validator.Validate(this);
+            return !res.IsValid;
         }
     }
 
     public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
-    private void ErrorsViewModel_ErrorsChanged(object sender, DataErrorsChangedEventArgs e)
-    {
-        ErrorsChanged?.Invoke(this, e);
-    }
-    
+
     
 }

@@ -10,12 +10,12 @@ public class OptimizationPageVMValidator : AbstractValidator<OptimizationPageVM>
         this.CascadeMode = CascadeMode.StopOnFirstFailure;
         this.RuleFor(x => x.ObjectiveFunctionInput)
             .NotEmpty()
-            .WithMessage("Поле не должно быть пустым");
+            .WithMessage("Поле не должно быть пустым")
+            .Must(x=> !x.Contains("="))
+            .WithMessage("не должно быть равенством");
 
         this.RuleFor(x => x.ObjectiveParameter)
             .NotEmpty()
             .WithMessage("Целевой параметр не должен быть пустым");
-        this.RuleFor(x => x.OptimizationProblem)
-            .SetValidator(new OptimizationProblemValidator());
     }
 }

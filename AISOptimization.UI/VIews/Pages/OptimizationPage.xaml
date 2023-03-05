@@ -123,7 +123,7 @@
                             <ui:Card.Footer>
                                 <ItemsControl Grid.IsSharedSizeScope="True"
                                               ItemsSource="{Binding ViewModel.OptimizationProblem.VectorX,
-                                                   ValidatesOnDataErrors=True}">
+                                                   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}">
 
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
@@ -139,7 +139,13 @@
                                                             Grid.Column="0"
                                                             ClearButtonEnabled="False"
                                                             Text="{Binding FirstRoundRestriction.Min,
-                                                                   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
+                                                                   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,
+                                                                    ValidatesOnNotifyDataErrors=True,
+                                                                    ValidatesOnExceptions=True,
+                                                                    NotifyOnSourceUpdated=True,
+                                                                    NotifyOnTargetUpdated=True,
+                                                                    ValidatesOnDataErrors=True,
+                                                                   NotifyOnValidationError=True}" />
                                                 <ComboBox Grid.Column="1" Margin="8,0"
                                                           SelectedItem="{Binding FirstRoundRestriction.LessSign}"
                                                           ItemsSource="{Binding FirstRoundRestriction.Signs}" />
@@ -156,7 +162,7 @@
                                                             ClearButtonEnabled="False"
                                                             Text="{Binding FirstRoundRestriction.Max,
                                                                    Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,
-                                                                    ValidatesOnDataErrors=True}" />
+                                                                    ValidatesOnNotifyDataErrors=True}" />
                                             </Grid>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>

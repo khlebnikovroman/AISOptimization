@@ -1,11 +1,7 @@
-﻿using System.Linq;
-
-using AISOptimization.Core;
-
-using FluentValidation;
+﻿using FluentValidation;
 
 
-namespace AISOptimization.VIews.Pages;
+namespace AISOptimization.Core;
 
 public class FirstRoundRestrictionValidator: AbstractValidator<FirstRoundRestriction>
 {
