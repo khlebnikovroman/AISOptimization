@@ -85,6 +85,7 @@ public class OptimizationProblem : BaseVM
 
     public IOptimizationMethod OptimizationMethod { get; set; }
     public Extremum Extremum { get; set; }
+    public string TESTPROPERTY { get; set; }
 
     private Expression Function { get; }
     

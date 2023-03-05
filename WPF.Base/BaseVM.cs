@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 
 namespace WPF.Base;
 
-public class BaseVM: INotifyPropertyChanged
+public abstract class BaseVM: INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler? PropertyChanged;
 

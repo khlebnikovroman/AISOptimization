@@ -14,6 +14,8 @@ using AISOptimization.VIews.Pages;
 
 using Autofac;
 
+using FluentValidation;
+
 using Wpf.Ui.Contracts;
 using Wpf.Ui.Controls;
 using Wpf.Ui.Services;
@@ -50,6 +52,9 @@ namespace AISOptimization
             builder.RegisterType<SelectVariableParametersControlVM>().AsSelf();
             
             builder.Register(c => new AutofacAdapter()).As<IServiceProvider>().SingleInstance();
+
+            builder.RegisterType<OptimizationPageVMValidator>().As<AbstractValidator<OptimizationPageVM>>();
+            builder.RegisterType<OptimizationPageVMValidator>().AsSelf();
             
             _container = builder.Build();
             var sp = _container.Resolve<IServiceProvider>() as AutofacAdapter;
