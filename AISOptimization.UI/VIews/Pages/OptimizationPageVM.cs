@@ -21,16 +21,33 @@ public class OptimizationPageVM : BaseVM, INotifyDataErrorInfo
 {
     private readonly MyDialogService _dialogService;
     private readonly AbstractValidator<OptimizationPageVM> _validator;
+    private readonly ErrorsViewModel _errorsViewModel = new ErrorsViewModel();
 
     public OptimizationPageVM(MyDialogService dialogService,AbstractValidator<OptimizationPageVM> validator)
     {
         _dialogService = dialogService;
         _validator = validator;
+        _errorsViewModel.ErrorsChanged += ErrorsViewModel_ErrorsChanged;
         PropertyChanged += (sender, args) => ErrorsChanged(sender,new DataErrorsChangedEventArgs(args.PropertyName));
     }
 
     public string ObjectiveParameter { get; set; } = "z";
-    public string ObjectiveFunctionInput { get; set; } = "a + b + c + d +ee";
+
+    public string ObjectiveFunctionInput
+    {
+        get => _objectiveFunctionInput;
+        set
+        {
+            _objectiveFunctionInput = value;
+
+            _errorsViewModel.ClearErrors(nameof(ObjectiveFunctionInput));
+            if (_objectiveFunctionInput != "123")
+            {
+                _errorsViewModel.AddError(nameof(ObjectiveFunctionInput), "ОШИБКА");
+            }
+            OnPropertyChanged();
+        }
+    }
 
     public OptimizationProblem OptimizationProblem { get; set; }
     
@@ -54,6 +71,7 @@ public class OptimizationPageVM : BaseVM, INotifyDataErrorInfo
 
 
     private RelayCommand _optimizeCommand;
+    private string _objectiveFunctionInput = "a + b + c + d +ee";
 
     public RelayCommand OptimizeCommand
     {
@@ -146,9 +164,7 @@ public class OptimizationPageVM : BaseVM, INotifyDataErrorInfo
     // }
     public IEnumerable GetErrors(string? propertyName)
     {
-        var allErrors = _validator.Validate(this).Errors;
-        var errors = allErrors.Where(e => e.PropertyName == propertyName);
-        return errors;
+        return _errorsViewModel.GetErrors(propertyName);
     }
 
     public bool HasErrors
@@ -157,9 +173,16 @@ public class OptimizationPageVM : BaseVM, INotifyDataErrorInfo
         {
             var isValid = _validator.Validate(this).IsValid;
 
+            return _errorsViewModel.HasErrors;
             return isValid;
         }
     }
 
     public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
+    private void ErrorsViewModel_ErrorsChanged(object sender, DataErrorsChangedEventArgs e)
+    {
+        ErrorsChanged?.Invoke(this, e);
+    }
+    
+    
 }
