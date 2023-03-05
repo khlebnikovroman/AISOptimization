@@ -16,9 +16,6 @@ public class OptimizationProblemValidator: AbstractValidator<OptimizationProblem
                 x.RuleFor(x => x.FirstRoundRestriction)
                  .SetValidator(new FirstRoundRestrictionValidator());
             });
-
-        this.RuleFor(x => x.TESTPROPERTY)
-            .Length(5, 12)
-            .WithMessage("TEST PROPERTY ERROR");
+        
     }
 }

@@ -8,7 +8,7 @@ namespace AISOptimization.Core;
 public class SecondRoundRestriction : BaseVM
 {
     public Expression Expression { get; set; }
-
+    
     public bool IsSatisfied(Point point)
     {
         var variables = Expression.getVariables();

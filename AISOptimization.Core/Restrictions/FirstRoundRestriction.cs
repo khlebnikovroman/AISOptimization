@@ -21,8 +21,29 @@ public enum FirstRoundRestrictionSatisfactory
 public class FirstRoundRestriction: BaseVM , ICloneable, INotifyDataErrorInfo
 {
     public static List<string> Signs { get; } = new() {"<", "≤"};
-    public double Max { get; set; } = 1;
-    public double Min { get; set; } = 0;
+
+    public double Max
+    {
+        get => _max;
+        set
+        {
+            _max = value;
+            ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(nameof(Max)));
+            ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(nameof(Min)));
+        } 
+    }
+
+    public double Min
+    {
+        get => _min;
+        set
+        {
+            _min = value;
+            ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(nameof(Max)));
+            ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(nameof(Min)));
+        }
+    }
+
     private string _lessSign = "<";
     public IValidator<FirstRoundRestriction> Validator { get; set; } = new FirstRoundRestrictionValidator();
     public string LessSign
@@ -45,6 +66,8 @@ public class FirstRoundRestriction: BaseVM , ICloneable, INotifyDataErrorInfo
     } 
 
     private string _biggerSign = "<";
+    private double _max = 1;
+    private double _min = 0;
 
     public string BiggerSign
     {

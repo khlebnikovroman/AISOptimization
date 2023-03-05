@@ -1,14 +1,18 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Windows.Documents;
 
 using AISOptimization.Core;
 using AISOptimization.Services;
 
 using FluentValidation;
+
+using org.matheval;
 
 using WPF.Base;
 
@@ -28,6 +32,8 @@ public class OptimizationPageVM : BaseVM, INotifyDataErrorInfo
         _validator = validator;
     }
 
+    public List<string> VariablesKeys { get; private set; }
+    public string SecondRoundRestrictionInput { get; set; }
     public string ObjectiveParameter { get; set; } = "z";
 
     public string ObjectiveFunctionInput { get; set; } = "x + f - d";
@@ -42,17 +48,28 @@ public class OptimizationPageVM : BaseVM, INotifyDataErrorInfo
         {
             return _inputObjectiveFunction ??= new RelayCommand(async o =>
             {
-                OptimizationProblem = await _dialogService.ShowDialog<SelectVariableParametersControl>(ObjectiveFunctionInput) as OptimizationProblem;
+                var res = await _dialogService.ShowDialog<SelectVariableParametersControl>(ObjectiveFunctionInput) as OptimizationProblem;
 
-                foreach (var independentVariable in OptimizationProblem.VectorX)
+                
+                if (res != null)
                 {
-                    independentVariable.FirstRoundRestriction.PropertyChanged += (sender, args) =>
-                        ErrorsChanged?.Invoke(sender, new DataErrorsChangedEventArgs(args.PropertyName));
-                }
-                if (OptimizationProblem != null)
-                {
+                    OptimizationProblem = res;
                     OptimizationProblem.Extremum = Extremum.Max;
+                    VariablesKeys = OptimizationProblem.GetVariables().ToList();
                 }
+            });
+        }
+    }
+
+    private RelayCommand _addSecondRoundRestriction;
+
+    public RelayCommand AddSecondRoundRestriction
+    {
+        get
+        {
+            return _addSecondRoundRestriction ??= new RelayCommand(o =>
+            {
+                OptimizationProblem.SecondRoundRestrictions.Add(new SecondRoundRestriction(){Expression = new Expression(SecondRoundRestrictionInput)});
             });
         }
     }
@@ -78,17 +95,7 @@ public class OptimizationPageVM : BaseVM, INotifyDataErrorInfo
 
                 mb.Content = sb.ToString();
                 mb.ShowDialog();
-            }, o =>
-            {
-                var res = _validator.Validate(this);
-                
-                foreach (var error in res.Errors)
-                {
-                    Debug.WriteLine($"{error.PropertyName} {error.ErrorMessage}");
-                }
-                Debug.WriteLine("______________________________________");
-                return res.IsValid;
-            });
+            }, o => OptimizationProblem is not null && !OptimizationProblem.HasErrors());
         }
     }
     
@@ -103,7 +110,7 @@ public class OptimizationPageVM : BaseVM, INotifyDataErrorInfo
         get
         {
             var res = _validator.Validate(this);
-            return !res.IsValid;
+            return !res.IsValid || OptimizationProblem is null || OptimizationProblem.HasErrors();
         }
     }
 

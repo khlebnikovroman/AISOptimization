@@ -140,12 +140,7 @@
                                                             ClearButtonEnabled="False"
                                                             Text="{Binding FirstRoundRestriction.Min,
                                                                    Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,
-                                                                    ValidatesOnNotifyDataErrors=True,
-                                                                    ValidatesOnExceptions=True,
-                                                                    NotifyOnSourceUpdated=True,
-                                                                    NotifyOnTargetUpdated=True,
-                                                                    ValidatesOnDataErrors=True,
-                                                                   NotifyOnValidationError=True}" />
+                                                                    ValidatesOnNotifyDataErrors=True}" />
                                                 <ComboBox Grid.Column="1" Margin="8,0"
                                                           SelectedItem="{Binding FirstRoundRestriction.LessSign}"
                                                           ItemsSource="{Binding FirstRoundRestriction.Signs}" />
@@ -173,22 +168,19 @@
                             <TextBlock Text="Ограничения второго рода" />
                             <ui:Card.Footer>
                                 <StackPanel>
-                                    <ui:TextBox Text="{Binding ViewModel.OptimizationProblem.TESTPROPERTY,
-                                     Mode=TwoWay,
-                                      UpdateSourceTrigger=PropertyChanged,
-                                       ValidatesOnDataErrors=True,
-                                        ValidatesOnExceptions=True,
-                                         ValidatesOnNotifyDataErrors=True,
-                                         NotifyOnValidationError=True,
-                                         NotifyOnSourceUpdated=True,
-                                         NotifyOnTargetUpdated=True}"/>
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition />
                                             <ColumnDefinition Width="Auto" />
                                         </Grid.ColumnDefinitions>
-                                        <ui:TextBox />
-                                        <ui:Button Grid.Column="1" Content="Добавить" />
+                                        <ui:TextBox Text="{Binding ViewModel.SecondRoundRestrictionInput,
+                                         Mode=TwoWay,
+                                         UpdateSourceTrigger=PropertyChanged,
+                                         ValidatesOnNotifyDataErrors=True}" />
+                                        <ui:Button Grid.Column="1"
+                                                   Appearance="Primary"
+                                                   Content="Добавить" Icon="Add16"
+                                                   Margin="8,0,0,0" Height="34" Command="{Binding ViewModel.AddSecondRoundRestriction}" />
 
                                     </Grid>
                                     <ListBox
@@ -201,7 +193,7 @@
                                                         <ColumnDefinition />
                                                         <ColumnDefinition />
                                                     </Grid.ColumnDefinitions>
-                                                    <ui:TextBox Grid.Column="0" Text="{Binding  Expression}" />
+                                                    <Label Grid.Column="0" Content="{Binding  Expression}" />
                                                     <!-- <Label Grid.Column="1" Content="{Binding Key}"/> -->
                                                     <!-- <ui:TextBox Grid.Column="2" Text="{Binding FirstRoundRestriction.Max}"/> -->
                                                 </Grid>

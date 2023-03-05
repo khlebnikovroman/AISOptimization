@@ -27,7 +27,7 @@ public class OptimizationProblem : BaseVM
     public OptimizationProblem(string objectiveFunction, IEnumerable<IVariable> independentVariables, IEnumerable<IVariable> staticVariables)
     {
         Function = new Expression(objectiveFunction);
-
+        Function.DisableFunction(new[] {"=", ">=","<=",">","<"});
         VectorX = new FullyObservableCollection<IndependentVariable>();
 
         foreach (var independentVariable in independentVariables)
@@ -53,6 +53,11 @@ public class OptimizationProblem : BaseVM
 
     }
 
+    public bool HasErrors()
+    {
+        var hasErrors = VectorX.Any(x => !x.FirstRoundRestriction.Validator.Validate(x.FirstRoundRestriction).IsValid);
+        return hasErrors;
+    }
     private void StaticVariablesOnItemPropertyChanged(object? sender, ItemPropertyChangedEventArgs e)
     {
         var staticVariable = StaticVariables[e.CollectionIndex];
@@ -85,7 +90,6 @@ public class OptimizationProblem : BaseVM
 
     public IOptimizationMethod OptimizationMethod { get; set; }
     public Extremum Extremum { get; set; }
-    public string TESTPROPERTY { get; set; }
 
     private Expression Function { get; }
     
@@ -99,7 +103,18 @@ public class OptimizationProblem : BaseVM
 
         return e.getVariables();
     }
-    
+    public IEnumerable<string> GetVariables()
+    {
+        return Function.getVariables();
+    }
+
+    public static bool IsValidExpression(string expression)
+    {
+        var exp = new Expression(expression);
+        var errors = exp.GetError();
+
+        return errors.Count == 0;
+    }
     private void VectorXOnItemPropertyChanged(object? sender, ItemPropertyChangedEventArgs e)
     {
         // var item = VectorX[e.CollectionIndex];
