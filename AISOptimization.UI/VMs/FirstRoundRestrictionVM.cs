@@ -19,11 +19,34 @@ namespace  AISOptimization.UI.VM.VMs;
 [AdaptTo("[name]Dto")]
 public class FirstRoundRestrictionVM: BaseVM, INotifyDataErrorInfo
 {
+    private double _min = 0;
+    private double _max = 1;
     public static List<string> Signs { get; } = new() {"<", "≤",};
     public string LessSign { get; set; } = "<";
     public string BiggerSign { get; set; } = "<";
-    public double Min { get; set; } = 0;
-    public double Max { get; set; } = 1;
+
+    public double Min
+    {
+        get => _min;
+        set
+        {
+            _min = value;
+            ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(nameof(Min)));
+            ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(nameof(Max)));
+        }
+    }
+
+    public double Max
+    {
+        get => _max;
+        set
+        {
+            _max = value;
+            ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(nameof(Min)));
+            ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(nameof(Max)));
+        }
+    }
+
     public IValidator<FirstRoundRestrictionVM> Validator { get; set; } = new FirstRoundRestrictionVMValidator();
     public IEnumerable GetErrors(string? propertyName)
     {

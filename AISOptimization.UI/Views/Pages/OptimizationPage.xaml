@@ -46,7 +46,9 @@
                         <ui:Card.Footer>
 
                             <controls:LabeledControlPresenter HeaderText="Целевая функция">
+                                
                                 <Grid>
+                                    
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto" MinWidth="40" />
                                         <ColumnDefinition Width="20" />
@@ -66,7 +68,13 @@
                                                 ClearButtonEnabled="False"
                                                 Text="{Binding ViewModel.ObjectiveFunctionInput,Mode=TwoWay,
                                       UpdateSourceTrigger=PropertyChanged,
-                                         ValidatesOnNotifyDataErrors=True}" />
+                                         ValidatesOnNotifyDataErrors=True}">
+                                        <ui:TextBox.InputBindings>
+                                            <KeyBinding 
+                                                Key="Enter"
+                                                Command="{Binding ViewModel.InputObjectiveFunction}"/>
+                                        </ui:TextBox.InputBindings>
+                                    </ui:TextBox>
                                     <ui:Button Grid.Column="3" Appearance="Primary"
                                                Command="{Binding ViewModel.InputObjectiveFunction}"
                                                VerticalAlignment="Bottom"
@@ -96,30 +104,32 @@
                         <ui:Card Margin="0,16,0,0" Visibility="{Binding ViewModel.OptimizationProblemVM.StaticVariables, Converter={StaticResource EmptyCollectionToVisibilityConverter}}">
                             <TextBlock Text="Статические параметры" />
                             <ui:Card.Footer>
-                                <ListBox ItemsSource="{Binding ViewModel.OptimizationProblemVM.StaticVariables}">
-                                    <ListBox.ItemTemplate>
+                                <ItemsControl Grid.IsSharedSizeScope="True" ItemsSource="{Binding ViewModel.OptimizationProblemVM.StaticVariables}">
+                                    <ItemsControl.ItemTemplate>
                                         <DataTemplate>
                                             <Grid>
                                                 <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="Auto" />
-                                                    <ColumnDefinition />
+                                                    <ColumnDefinition Width="Auto" SharedSizeGroup="a" />
+                                                    <ColumnDefinition Width="Auto" SharedSizeGroup="b" />
+                                                    <ColumnDefinition  SharedSizeGroup="c"/>
                                                 </Grid.ColumnDefinitions>
-                                                <Label Grid.Column="0" Content="{Binding Key}"
+                                                <ui:TextBox Margin="8,0" MinWidth="100" ClearButtonEnabled="False" Grid.Column="0" Text="{Binding Description}" PlaceholderText="Описание"/>
+                                                <Label Grid.Column="1" Content="{Binding Key}"
                                                        VerticalAlignment="Center"
                                                        HorizontalAlignment="Center"
                                                        HorizontalContentAlignment="Center"
                                                        VerticalContentAlignment="Center"
                                                        ContentStringFormat=" {0} = " />
-                                                <ui:TextBox Grid.Column="1" Text="{Binding Value}" Margin="9,0,0,0" />
+                                                <ui:TextBox Grid.Column="2" Text="{Binding Value}" Margin="9,0,0,0" />
 
                                             </Grid>
                                         </DataTemplate>
-                                    </ListBox.ItemTemplate>
-                                </ListBox>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
                             </ui:Card.Footer>
                         </ui:Card>
                         <ui:Card Margin="0,16,0,0">
-                            <TextBlock Text="Ограничения первого рода" />
+                            <TextBlock Text="Независимые параметры" />
                             <ui:Card.Footer>
                                 <ItemsControl Grid.IsSharedSizeScope="True"
                                               ItemsSource="{Binding ViewModel.OptimizationProblemVM.IndependentVariables,
@@ -129,31 +139,39 @@
                                         <DataTemplate>
                                             <Grid Margin="0,0,0,7">
                                                 <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto" SharedSizeGroup="d" />
                                                     <ColumnDefinition Width="Auto" SharedSizeGroup="a" />
                                                     <ColumnDefinition Width="Auto" SharedSizeGroup="b" />
                                                     <ColumnDefinition Width="Auto" SharedSizeGroup="c" />
                                                     <ColumnDefinition Width="Auto" SharedSizeGroup="b" />
                                                     <ColumnDefinition Width="Auto" SharedSizeGroup="e" />
                                                 </Grid.ColumnDefinitions>
-                                                <ui:TextBox MinWidth="70"
+                                                <ui:TextBox MinWidth="100"
+                                                            Margin="8,0"
                                                             Grid.Column="0"
+                                                            ClearButtonEnabled="False"
+                                                            PlaceholderText="Описание"
+                                                            Text="{Binding Description,
+                                                                   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                <ui:TextBox MinWidth="70"
+                                                            Grid.Column="1"
                                                             ClearButtonEnabled="False"
                                                             Text="{Binding FirstRoundRestriction.Min,
                                                                    Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,
                                                                     ValidatesOnNotifyDataErrors=True}" />
-                                                <ComboBox Grid.Column="1" Margin="8,0"
+                                                <ComboBox Grid.Column="2" Margin="8,0"
                                                           SelectedItem="{Binding FirstRoundRestriction.LessSign}"
                                                           ItemsSource="{Binding FirstRoundRestriction.Signs}" />
-                                                <Label Grid.Column="2" Content="{Binding Key}"
+                                                <Label Grid.Column="3" Content="{Binding Key}"
                                                        HorizontalContentAlignment="Center"
                                                        VerticalContentAlignment="Center"
                                                        Margin="8,0" />
-                                                <ComboBox Grid.Column="3" Margin="8,0"
+                                                <ComboBox Grid.Column="4" Margin="8,0"
                                                           Style="{StaticResource ComboBoxWithoutArrow}"
                                                           SelectedItem="{Binding FirstRoundRestriction.BiggerSign}"
                                                           ItemsSource="{Binding FirstRoundRestriction.Signs}" />
                                                 <ui:TextBox MinWidth="70"
-                                                            Grid.Column="4"
+                                                            Grid.Column="5"
                                                             ClearButtonEnabled="False"
                                                             Text="{Binding FirstRoundRestriction.Max,
                                                                    Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,
@@ -176,30 +194,40 @@
                                         <ui:TextBox Text="{Binding ViewModel.SecondRoundRestrictionInput,
                                          Mode=TwoWay,
                                          UpdateSourceTrigger=PropertyChanged,
-                                         ValidatesOnNotifyDataErrors=True}" />
-                                        <ui:Button Grid.Column="1"
+                                         ValidatesOnNotifyDataErrors=True}" >
+                                            <ui:TextBox.InputBindings>
+                                                <KeyBinding
+                                                    Key="Enter"
+                                                    Command="{Binding ViewModel.AddSecondRoundRestriction}"/>
+                                            </ui:TextBox.InputBindings>
+                                        </ui:TextBox>
+                                        <ui:Button Grid.Column="1" 
                                                    Appearance="Primary"
                                                    Content="Добавить" Icon="Add16"
                                                    Margin="8,0,0,0" Height="34" Command="{Binding ViewModel.AddSecondRoundRestriction}" />
 
                                     </Grid>
-                                    <ListBox
+                                    <ItemsControl
                                         ItemsSource="{Binding ViewModel.OptimizationProblemVM.SecondRoundRestrictions}">
-                                        <ListBox.ItemTemplate>
+                                        <ItemsControl.ItemTemplate>
                                             <DataTemplate>
-                                                <Grid>
+                                                <Grid Margin="8">
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition />
-                                                        <ColumnDefinition />
-                                                        <ColumnDefinition />
+                                                        <ColumnDefinition Width="Auto"/>
                                                     </Grid.ColumnDefinitions>
-                                                    <Label Grid.Column="0" Content="{Binding  Expression.Formula}" />
-                                                    <!-- <Label Grid.Column="1" Content="{Binding Key}"/> -->
-                                                    <!-- <ui:TextBox Grid.Column="2" Text="{Binding FirstRoundRestriction.Max}"/> -->
+                                                    <ui:TextBox Grid.Column="0"
+                                                                Text="{Binding  Expression.Formula}"
+                                                                ClearButtonEnabled="False" />
+                                                    <ui:Button VerticalAlignment="Stretch"
+                                                               HorizontalAlignment="Stretch"
+                                                        Margin="8,0" Grid.Column="1" CommandParameter="{Binding}" Icon="Delete12"
+                                                               Command="{Binding  ViewModel.RemoveSecondRoundRestriction, 
+                                                               RelativeSource={RelativeSource AncestorType=local:OptimizationPage}}"/>
                                                 </Grid>
                                             </DataTemplate>
-                                        </ListBox.ItemTemplate>
-                                    </ListBox>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
                                 </StackPanel>
                             </ui:Card.Footer>
                         </ui:Card>
@@ -215,6 +243,88 @@
                            Command="{Binding ViewModel.OptimizeCommand}" />
             </StackPanel>
         </Grid>
+        <Grid Grid.Column="1" Grid.RowSpan="2" Visibility="{Binding ViewModel.OptimizationProblemResult, Converter={StaticResource NullToVisibilityConverter}}">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <ui:Card VerticalAlignment="Top">
+                Результат оптимизации
+                <ui:Card.Footer>
+                    <ScrollViewer>
+                        <StackPanel>
+                            <ui:Card Margin="0,8">
+                                Целевая функия
+                                <ui:Card.Footer>
+                                    <StackPanel>
+                                        <Label Content="{Binding ViewModel.OptimizationProblemResult.ObjectiveFunctionDescription}"/>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Label Content="{Binding ViewModel.OptimizationProblemResult.ObjectiveParameter}"/>
+                                            <Label Content="="/>
+                                            <Label Content="{Binding ViewModel.OptimizationProblemResult.ObjectiveFunction.Formula}"/>
+                                        </StackPanel>
+                                        <TextBlock>
+                                            <Run FontSize="15" Text="Наилучшее значение функции = "/>
+                                            <Run FontSize="15" FontWeight="Bold" Text="{Binding ViewModel.OptimizationProblemResult.ObjectiveFunctionResult}"/>
+                                        </TextBlock>
+                                    </StackPanel>
+                                    </ui:Card.Footer>
+                            </ui:Card>
+                            <ui:Card Margin="0,8" Visibility="{Binding ViewModel.OptimizationProblemResult.StaticVariables,
+                             Converter={StaticResource EmptyCollectionToVisibilityConverter}}">
+                                Статические параметры
+                                <ui:Card.Footer>
+                                    <ItemsControl Grid.IsSharedSizeScope="True"  ItemsSource="{Binding ViewModel.OptimizationProblemResult.StaticVariables}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Label Content="{Binding}"/>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </ui:Card.Footer>
+                            </ui:Card>
+                            <ui:Card Margin="0,8">
+                                Независимые переменные 
+                                <ui:Card.Footer>
+                                    <ItemsControl Grid.IsSharedSizeScope="True"  ItemsSource="{Binding ViewModel.OptimizationProblemResult.IndependentVariables}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition SharedSizeGroup="a"/>
+                                                        <ColumnDefinition Width="10"/>
+                                                        <ColumnDefinition SharedSizeGroup="b"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Grid.Column="0" FontSize="14" Text="{Binding}"/>
+                                                    <TextBlock Grid.Column="2" FontSize="14">
+                                                        <Run FontWeight="Bold" Text="Оптимальное значение:"/>
+                                                        <Run FontWeight="Bold" Text="{Binding Value}"/>
+                                                    </TextBlock>
 
+                                                </Grid>
+                                                
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </ui:Card.Footer>
+                            </ui:Card>
+                            <ui:Card Margin="0,8" Visibility="{Binding ViewModel.OptimizationProblemResult.SecondRoundRestrictions, Converter={StaticResource EmptyCollectionToVisibilityConverter}}">
+                                Ограничения второго рода
+                                <ui:Card.Footer>
+                                    <ItemsControl ItemsSource="{Binding ViewModel.OptimizationProblemResult.SecondRoundRestrictions}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Label Content="{Binding}"/>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </ui:Card.Footer>
+                            </ui:Card>
+                            
+                        </StackPanel>
+                    </ScrollViewer>
+                </ui:Card.Footer>
+            </ui:Card>
+        </Grid>
     </Grid>
 </Page>

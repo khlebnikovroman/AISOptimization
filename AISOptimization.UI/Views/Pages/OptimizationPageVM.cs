@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -12,6 +13,7 @@ using AISOptimization.Core.OptimizationMethods;
 using AISOptimization.Core.Restrictions;
 using AISOptimization.Services;
 using AISOptimization.UI.VM.VMs;
+using AISOptimization.VMs.Validators;
 
 using FluentValidation;
 
@@ -44,6 +46,7 @@ public class OptimizationPageVM : BaseVM, INotifyDataErrorInfo
     public string ObjectiveFunctionInput { get; set; } = "x^2 + y^2";
 
     public OptimizationProblemVM OptimizationProblemVM { get; set; }
+    public OptimizationResultVM OptimizationProblemResult { get; set; }
     
     private RelayCommand _inputObjectiveFunction;
 
@@ -60,7 +63,9 @@ public class OptimizationPageVM : BaseVM, INotifyDataErrorInfo
                 {
                     OptimizationProblemVM = res;
                     OptimizationProblemVM.Extremum = Extremum.Max;
-                    VariablesKeys = OptimizationProblem.GetVariables(OptimizationProblemVM.FunctionExpression.Formula).ToList();
+                    OptimizationProblemVM.ObjectiveParameter = ObjectiveParameter;
+                    VariablesKeys = OptimizationProblem.GetVariables(OptimizationProblemVM.ObjectiveFunction.Formula).ToList();
+                    OptimizationProblemResult = null;
                 }
             });
         }
@@ -75,12 +80,12 @@ public class OptimizationPageVM : BaseVM, INotifyDataErrorInfo
             return _addSecondRoundRestriction ??= new RelayCommand(o =>
             {
                 OptimizationProblemVM.SecondRoundRestrictions.Add(new SecondRoundRestrictionVM(){Expression = new FunctionExpressionVM(){Formula = SecondRoundRestrictionInput}});
+                SecondRoundRestrictionInput = "";
             }, _ =>
             {
                 if (SecondRoundRestrictionInput is not null)
                 {
-                    return SecondRoundRestrictionInput.Length > 0 && _validator.Validate(this)
-                                                                               .Errors.All(e => e.PropertyName != nameof(SecondRoundRestrictionInput));
+                    return SecondRoundRestrictionInput.Length > 0 && !_validator.Validate(this).HasError(nameof(SecondRoundRestrictionInput));
                 }
 
                 return false;
@@ -88,6 +93,18 @@ public class OptimizationPageVM : BaseVM, INotifyDataErrorInfo
         }
     }
 
+    private RelayCommand _removeSecondRoundRestriction;
+
+    public RelayCommand RemoveSecondRoundRestriction
+    {
+        get
+        {
+            return _removeSecondRoundRestriction ??= new RelayCommand(o =>
+            {
+                OptimizationProblemVM.SecondRoundRestrictions.Remove(o as SecondRoundRestrictionVM);
+            });
+        }
+    }
 
     private RelayCommand _optimizeCommand;
 
@@ -100,17 +117,26 @@ public class OptimizationPageVM : BaseVM, INotifyDataErrorInfo
                 var problem = OptimizationProblemVM.Adapt<OptimizationProblem>();
                 var method = new ComplexBoxMethod(problem, 0.001);
                 var p = method.SolveProblem();
-                var mb = new MessageBox();
-                mb.Title = "Результат  оптимизации";
-                var sb = new StringBuilder();
+                OptimizationResultVM resVM =  problem.Adapt<OptimizationProblemVM>().Adapt<OptimizationResultVM>();
+                resVM.IndependentVariables = p.X.Adapt<ObservableCollection<IndependentVariableVM>>();
+                resVM.ObjectiveFunctionResult = problem.GetValueInPoint(p);
+                OptimizationProblemResult = resVM;
 
-                foreach (var variable in p.X)
-                {
-                    sb.AppendLine($"{variable.Key}: {variable.Value}");
-                }
-
-                mb.Content = sb.ToString();
-                mb.ShowDialog();
+                // var mb = new MessageBox();
+                // mb.Title = "Результат  оптимизации";
+                // var sb = new StringBuilder();
+                //
+                // foreach (var variable in p.X)
+                // {
+                //     sb.AppendLine($"{variable.Key}: {variable.Value}");
+                // }
+                //
+                // mb.Content = sb.ToString();
+                // mb.ButtonLeftName = "Ок";
+                // mb.ShowDialog();
+                //
+                // mb.ButtonRightClick += (_, _) => mb.Close();
+                // mb.ButtonLeftClick += (_, _) => mb.Close();
             }, o => OptimizationProblemVM is not null && !OptimizationProblemVM.HasErrors);
         }
     }

@@ -8,6 +8,7 @@ namespace AISOptimization.Core.Parameters;
 
 public class IndependentVariable : Entity, IVariable, ICloneable
 {
+    public string Description { get; set; }
     public FirstRoundRestriction FirstRoundRestriction { get; set; }
 
     public object Clone()

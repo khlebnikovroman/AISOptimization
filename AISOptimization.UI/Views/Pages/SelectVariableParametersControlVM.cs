@@ -65,7 +65,7 @@ public class SelectVariableParametersControlVM : BaseVM, IDataHolder, IResultHol
 
                 _optimizationProblem = new OptimizationProblemVM()
                 {
-                    FunctionExpression = new FunctionExpressionVM(){Formula = _function},
+                    ObjectiveFunction = new FunctionExpressionVM(){Formula = _function},
                     IndependentVariables = new ObservableCollection<IndependentVariableVM>(independentVariables),
                     StaticVariables = new ObservableCollection<StaticVariableVM>(staticVariables)
                 };

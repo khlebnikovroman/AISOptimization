@@ -66,7 +66,7 @@ namespace AISOptimization
             TypeAdapterConfig<OptimizationProblem, OptimizationProblemVM>
                 .NewConfig()
                 .TwoWays()
-                .Map(x => x.FunctionExpression, x => x.Function)
+                .Map(x => x.ObjectiveFunction, x => x.ObjectiveFunction)
                 .Map(x => x.IndependentVariables, x => x.VectorX);
             TypeAdapterConfig<FunctionExpressionVM, FuncExpression>
                 .NewConfig()

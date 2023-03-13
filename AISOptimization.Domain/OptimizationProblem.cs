@@ -1,4 +1,5 @@
-﻿using System.Collections.Specialized;
+﻿using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 
 using AISOptimization.Core.Common;
@@ -22,15 +23,28 @@ public enum Extremum
 
 public class OptimizationProblem : Entity
 {
-    private readonly FuncExpression _function;
+    private readonly FuncExpression _objectiveFunction;
 
     public OptimizationProblem()
     {
+        StaticVariables.CollectionChanged += (sender, args) =>
+        {
+            foreach (var secondRoundRestriction in SecondRoundRestrictions)
+            {
+                foreach (StaticVariable staticVariable in args.NewItems)
+                {
+                    if (secondRoundRestriction.Expression.GetVariables().Contains(staticVariable.Key))
+                    {
+                        secondRoundRestriction.Expression.Bind(staticVariable.Key, staticVariable.Value);
+                    }
+                }
+            }
+        };
     }
 
-    public OptimizationProblem(string objectiveFunction, IEnumerable<IVariable> independentVariables, IEnumerable<IVariable> staticVariables)
+    public OptimizationProblem(string objectiveFunction, IEnumerable<IVariable> independentVariables, IEnumerable<IVariable> staticVariables) : this()
     {
-        Function = new FuncExpression(objectiveFunction);
+        ObjectiveFunction = new FuncExpression(objectiveFunction);
         foreach (var independentVariable in independentVariables)
         {
             VectorX.Add(new IndependentVariable
@@ -46,19 +60,21 @@ public class OptimizationProblem : Entity
 
     public Extremum Extremum { get; set; }
 
-    public FuncExpression Function
+    public string ObjectiveParameter { get; set; }
+    public string ObjectiveFunctionDescription { get; set; }
+    public FuncExpression ObjectiveFunction
     {
-        get => _function;
+        get => _objectiveFunction;
         init
         {
-            _function = value;
-            _function.DisableFunction(SpecialFunctions.ComparisonFunctions);
+            _objectiveFunction = value;
+            _objectiveFunction.DisableFunction(SpecialFunctions.ComparisonFunctions);
         }
     }
 
     public List<SecondRoundRestriction> SecondRoundRestrictions { get; init; } = new ();
     public List<IndependentVariable> VectorX { get; init; }=new ();
-    public List<StaticVariable> StaticVariables { get; init; }=new ();
+    public ObservableCollection<StaticVariable> StaticVariables { get; init; }=new ();
     
 
 
@@ -71,7 +87,7 @@ public class OptimizationProblem : Entity
 
     public IEnumerable<string> GetVariables()
     {
-        return Function.GetVariables();
+        return ObjectiveFunction.GetVariables();
     }
 
     public static bool IsValidExpression(string expression)
@@ -86,15 +102,19 @@ public class OptimizationProblem : Entity
     {
         foreach (var xVariable in point.X)
         {
-            Function.Bind(xVariable.Key, xVariable.Value);
+            ObjectiveFunction.Bind(xVariable.Key, xVariable.Value);
+        }
+        foreach (var xVariable in StaticVariables)
+        {
+            ObjectiveFunction.Bind(xVariable.Key, xVariable.Value);
         }
 
         switch (Extremum)
         {
             case Extremum.Min:
-                return -Function.Eval<double>();
+                return -ObjectiveFunction.Eval<double>();
             case Extremum.Max:
-                return Function.Eval<double>();
+                return ObjectiveFunction.Eval<double>();
             default:
                 throw new ArgumentOutOfRangeException();
         }
