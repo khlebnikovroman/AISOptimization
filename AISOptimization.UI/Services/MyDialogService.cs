@@ -6,7 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 
 using AISOptimization.Utils;
-using AISOptimization.VIews.Pages;
+using AISOptimization.Views.Pages;
 
 using Wpf.Ui.Common;
 using Wpf.Ui.Contracts;

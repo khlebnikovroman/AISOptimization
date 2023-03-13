@@ -8,13 +8,19 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
+using AISOptimization.Core;
+using AISOptimization.Core.Parameters;
+using AISOptimization.Core.Restrictions;
 using AISOptimization.Services;
+using AISOptimization.UI.VM.VMs;
 using AISOptimization.Utils;
-using AISOptimization.VIews.Pages;
+using AISOptimization.Views.Pages;
 
 using Autofac;
 
 using FluentValidation;
+
+using Mapster;
 
 using Wpf.Ui.Contracts;
 using Wpf.Ui.Controls;
@@ -55,6 +61,17 @@ namespace AISOptimization
 
             builder.RegisterType<OptimizationPageVMValidator>().As<AbstractValidator<OptimizationPageVM>>();
             builder.RegisterType<OptimizationPageVMValidator>().AsSelf();
+
+//todo в отдельную функцию
+            TypeAdapterConfig<OptimizationProblem, OptimizationProblemVM>
+                .NewConfig()
+                .TwoWays()
+                .Map(x => x.FunctionExpression, x => x.Function)
+                .Map(x => x.IndependentVariables, x => x.VectorX);
+            TypeAdapterConfig<FunctionExpressionVM, FuncExpression>
+                .NewConfig()
+                .ConstructUsing(src => new FuncExpression(src.Formula));
+            
             
             _container = builder.Build();
             var sp = _container.Resolve<IServiceProvider>() as AutofacAdapter;
