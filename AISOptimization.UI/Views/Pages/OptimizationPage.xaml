@@ -248,7 +248,8 @@
                 <RowDefinition/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <ui:Card VerticalAlignment="Top">
+            <StackPanel>
+                <ui:Card VerticalAlignment="Top">
                 Результат оптимизации
                 <ui:Card.Footer>
                     <ScrollViewer>
@@ -269,19 +270,6 @@
                                         </TextBlock>
                                     </StackPanel>
                                     </ui:Card.Footer>
-                            </ui:Card>
-                            <ui:Card Margin="0,8" Visibility="{Binding ViewModel.OptimizationProblemResult.StaticVariables,
-                             Converter={StaticResource EmptyCollectionToVisibilityConverter}}">
-                                Статические параметры
-                                <ui:Card.Footer>
-                                    <ItemsControl Grid.IsSharedSizeScope="True"  ItemsSource="{Binding ViewModel.OptimizationProblemResult.StaticVariables}">
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <Label Content="{Binding}"/>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-                                </ui:Card.Footer>
                             </ui:Card>
                             <ui:Card Margin="0,8">
                                 Независимые переменные 
@@ -308,6 +296,20 @@
                                     </ItemsControl>
                                 </ui:Card.Footer>
                             </ui:Card>
+                            <ui:Card Margin="0,8" Visibility="{Binding ViewModel.OptimizationProblemResult.StaticVariables,
+                             Converter={StaticResource EmptyCollectionToVisibilityConverter}}">
+                                Статические параметры
+                                <ui:Card.Footer>
+                                    <ItemsControl Grid.IsSharedSizeScope="True"  ItemsSource="{Binding ViewModel.OptimizationProblemResult.StaticVariables}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Label Content="{Binding}"/>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </ui:Card.Footer>
+                            </ui:Card>
+                            
                             <ui:Card Margin="0,8" Visibility="{Binding ViewModel.OptimizationProblemResult.SecondRoundRestrictions, Converter={StaticResource EmptyCollectionToVisibilityConverter}}">
                                 Ограничения второго рода
                                 <ui:Card.Footer>
@@ -325,6 +327,10 @@
                     </ScrollViewer>
                 </ui:Card.Footer>
             </ui:Card>
+                <ui:Button Content="Показать график" Command="{Binding ViewModel.ShowPlot}"/>
+
+            </StackPanel>
+            
         </Grid>
     </Grid>
 </Page>

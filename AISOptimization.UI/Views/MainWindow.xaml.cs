@@ -47,6 +47,7 @@ namespace AISOptimization
                 {
                     TargetPageType = typeof(OptimizationPage)
                 },
+                
             };
         }
 

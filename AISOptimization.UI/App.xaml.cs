@@ -56,6 +56,10 @@ namespace AISOptimization
             builder.RegisterType<OptimizationPageVM>().AsSelf();;
             builder.RegisterType<SelectVariableParametersControl>().AsSelf();
             builder.RegisterType<SelectVariableParametersControlVM>().AsSelf();
+            builder.RegisterType<ChartDirectorSurface>().AsSelf();
+            builder.RegisterType<ChartDirectorCharts>().AsSelf();
+            builder.RegisterType<ChartDirectorSurfaceProjection>().AsSelf();
+            builder.RegisterType<ChartDirectorChartVM>().AsSelf();
             
             builder.Register(c => new AutofacAdapter()).As<IServiceProvider>().SingleInstance();
 

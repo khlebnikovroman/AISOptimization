@@ -1,0 +1,23 @@
+﻿<UserControl x:Class="AISOptimization.Views.Pages.ChartDirectorCharts"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:AISOptimization.Views.Pages"
+             mc:Ignorable="d"
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+             d:DataContext="{d:DesignInstance local:ChartDirectorCharts}"
+
+             d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <StackPanel Margin="0,6" x:Key="Footer" Orientation="Horizontal" HorizontalAlignment="Center">
+            <ui:Button Content="Закрыть" Appearance="Secondary" Command="{Binding ViewModel.CloseCommand}"/>
+        </StackPanel>
+    </UserControl.Resources>
+    <Grid>
+        <TabControl>
+            <TabItem Header="Поверхность" x:Name="Surface" />
+            <TabItem Header="Проеккция" x:Name="Projection" />
+        </TabControl>
+    </Grid>
+</UserControl>

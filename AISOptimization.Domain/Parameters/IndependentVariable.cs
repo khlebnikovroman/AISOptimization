@@ -14,7 +14,7 @@ public class IndependentVariable : Entity, IVariable, ICloneable
     public object Clone()
     {
         return new IndependentVariable
-            {Key = Key, Value = Value, FirstRoundRestriction = (FirstRoundRestriction) FirstRoundRestriction.Clone(),};
+            {Key = Key, Value = Value,Description = Description, FirstRoundRestriction = (FirstRoundRestriction) FirstRoundRestriction.Clone(),};
     }
 
     public string Key { get; set; }

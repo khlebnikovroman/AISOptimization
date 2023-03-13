@@ -23,6 +23,7 @@ using org.matheval;
 
 using WPF.Base;
 
+using Wpf.Ui.Contracts;
 using Wpf.Ui.Controls;
 
 
@@ -32,11 +33,13 @@ public class OptimizationPageVM : BaseVM, INotifyDataErrorInfo
 {
     private readonly MyDialogService _dialogService;
     private readonly AbstractValidator<OptimizationPageVM> _validator;
+    private readonly INavigationService _navigationService;
 
-    public OptimizationPageVM(MyDialogService dialogService,AbstractValidator<OptimizationPageVM> validator)
+    public OptimizationPageVM(MyDialogService dialogService,AbstractValidator<OptimizationPageVM> validator,INavigationService navigationService)
     {
         _dialogService = dialogService;
         _validator = validator;
+        _navigationService = navigationService;
     }
 
     public List<string> VariablesKeys { get; private set; }
@@ -140,7 +143,30 @@ public class OptimizationPageVM : BaseVM, INotifyDataErrorInfo
             }, o => OptimizationProblemVM is not null && !OptimizationProblemVM.HasErrors);
         }
     }
-    
+
+    private RelayCommand _showPlot;
+
+    public RelayCommand ShowPlot
+    {
+        get
+        {
+            return _showPlot ??= new RelayCommand(async o =>
+            {
+                switch (OptimizationProblemResult.IndependentVariables.Count)
+                {
+                    case 1:
+                        break;
+                    case 2:
+                        await _dialogService.ShowDialog<ChartDirectorCharts>(OptimizationProblemResult);
+                        
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            });
+        }
+    }
+
     public IEnumerable GetErrors(string? propertyName)
     {
         var errors = _validator.Validate(this).Errors.Where(e=>e.PropertyName==propertyName);
