@@ -1,11 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-using AISOptimization.Core.Common;
+using AISOptimization.Domain.Common;
 
 using org.matheval;
 
 
-namespace AISOptimization.Core;
+namespace AISOptimization.Domain;
 
 public class FuncExpression : Entity
 {
@@ -61,4 +61,6 @@ public class FuncExpression : Entity
         return _expression.GetError();
     }
 }
+
+
 

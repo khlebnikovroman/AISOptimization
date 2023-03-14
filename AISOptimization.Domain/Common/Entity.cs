@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
 
-namespace AISOptimization.Core.Common;
+namespace AISOptimization.Domain.Common;
 
 //https://github.com/vkhorikov/DddAndEFCore/blob/master/src/App/Entity.cs
 public class Entity
@@ -81,4 +81,6 @@ public class Entity
         return type;
     }
 }
+
+
 

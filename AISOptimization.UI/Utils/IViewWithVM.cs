@@ -10,5 +10,7 @@ public interface IViewWithVM<ViewModelType> : IViewWithVM
 
 public interface IViewWithVM
 {
-    public object ViewModelObject { get;  }
+    public object ViewModelObject { get; }
 }
+
+

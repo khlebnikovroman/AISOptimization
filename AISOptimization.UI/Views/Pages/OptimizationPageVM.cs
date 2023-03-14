@@ -3,28 +3,23 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Windows.Documents;
+using System.Text.Json;
 
-using AISOptimization.Core;
-using AISOptimization.Core.OptimizationMethods;
-using AISOptimization.Core.Restrictions;
+using AISOptimization.Domain;
+using AISOptimization.Domain.OptimizationMethods;
 using AISOptimization.Services;
-using AISOptimization.UI.VM.VMs;
+using AISOptimization.VMs;
 using AISOptimization.VMs.Validators;
 
 using FluentValidation;
 
 using Mapster;
 
-using org.matheval;
-
 using WPF.Base;
 
 using Wpf.Ui.Contracts;
-using Wpf.Ui.Controls;
 
 
 namespace AISOptimization.Views.Pages;
@@ -32,10 +27,20 @@ namespace AISOptimization.Views.Pages;
 public class OptimizationPageVM : BaseVM, INotifyDataErrorInfo
 {
     private readonly MyDialogService _dialogService;
-    private readonly AbstractValidator<OptimizationPageVM> _validator;
     private readonly INavigationService _navigationService;
+    private readonly AbstractValidator<OptimizationPageVM> _validator;
 
-    public OptimizationPageVM(MyDialogService dialogService,AbstractValidator<OptimizationPageVM> validator,INavigationService navigationService)
+    private RelayCommand _addSecondRoundConstraint;
+
+    private RelayCommand _inputObjectiveFunction;
+
+    private RelayCommand _optimizeCommand;
+
+    private RelayCommand _removeSecondRoundConstraint;
+
+    private RelayCommand _showPlot;
+
+    public OptimizationPageVM(MyDialogService dialogService, AbstractValidator<OptimizationPageVM> validator, INavigationService navigationService)
     {
         _dialogService = dialogService;
         _validator = validator;
@@ -43,15 +48,13 @@ public class OptimizationPageVM : BaseVM, INotifyDataErrorInfo
     }
 
     public List<string> VariablesKeys { get; private set; }
-    public string SecondRoundRestrictionInput { get; set; }
+    public string SecondRoundConstraintInput { get; set; }
     public string ObjectiveParameter { get; set; } = "z";
 
     public string ObjectiveFunctionInput { get; set; } = "x^2 + y^2";
 
     public OptimizationProblemVM OptimizationProblemVM { get; set; }
     public OptimizationResultVM OptimizationProblemResult { get; set; }
-    
-    private RelayCommand _inputObjectiveFunction;
 
     public RelayCommand InputObjectiveFunction
     {
@@ -61,7 +64,7 @@ public class OptimizationPageVM : BaseVM, INotifyDataErrorInfo
             {
                 var res = await _dialogService.ShowDialog<SelectVariableParametersControl>(ObjectiveFunctionInput) as OptimizationProblemVM;
 
-                
+
                 if (res != null)
                 {
                     OptimizationProblemVM = res;
@@ -74,21 +77,24 @@ public class OptimizationPageVM : BaseVM, INotifyDataErrorInfo
         }
     }
 
-    private RelayCommand _addSecondRoundRestriction;
-
-    public RelayCommand AddSecondRoundRestriction
+    public RelayCommand AddSecondRoundConstraint
     {
         get
         {
-            return _addSecondRoundRestriction ??= new RelayCommand(o =>
+            return _addSecondRoundConstraint ??= new RelayCommand(o =>
             {
-                OptimizationProblemVM.SecondRoundRestrictions.Add(new SecondRoundRestrictionVM(){Expression = new FunctionExpressionVM(){Formula = SecondRoundRestrictionInput}});
-                SecondRoundRestrictionInput = "";
+                OptimizationProblemVM.SecondRoundConstraints.Add(new SecondRoundConstraintVM
+                {
+                    ConstraintFunction = new FunctionExpressionVM
+                        {Formula = SecondRoundConstraintInput,},
+                });
+
+                SecondRoundConstraintInput = "";
             }, _ =>
             {
-                if (SecondRoundRestrictionInput is not null)
+                if (SecondRoundConstraintInput is not null)
                 {
-                    return SecondRoundRestrictionInput.Length > 0 && !_validator.Validate(this).HasError(nameof(SecondRoundRestrictionInput));
+                    return SecondRoundConstraintInput.Length > 0 && !_validator.Validate(this).HasError(nameof(SecondRoundConstraintInput));
                 }
 
                 return false;
@@ -96,20 +102,16 @@ public class OptimizationPageVM : BaseVM, INotifyDataErrorInfo
         }
     }
 
-    private RelayCommand _removeSecondRoundRestriction;
-
-    public RelayCommand RemoveSecondRoundRestriction
+    public RelayCommand RemoveSecondRoundConstraint
     {
         get
         {
-            return _removeSecondRoundRestriction ??= new RelayCommand(o =>
+            return _removeSecondRoundConstraint ??= new RelayCommand(o =>
             {
-                OptimizationProblemVM.SecondRoundRestrictions.Remove(o as SecondRoundRestrictionVM);
+                OptimizationProblemVM.SecondRoundConstraints.Remove(o as SecondRoundConstraintVM);
             });
         }
     }
-
-    private RelayCommand _optimizeCommand;
 
     public RelayCommand OptimizeCommand
     {
@@ -117,11 +119,13 @@ public class OptimizationPageVM : BaseVM, INotifyDataErrorInfo
         {
             return _optimizeCommand ??= new RelayCommand(o =>
             {
+                var json = JsonSerializer.Serialize(OptimizationProblemVM);
+                File.WriteAllText("json.txt", json);
                 var problem = OptimizationProblemVM.Adapt<OptimizationProblem>();
                 var method = new ComplexBoxMethod(problem, 0.001);
                 var p = method.SolveProblem();
-                OptimizationResultVM resVM =  problem.Adapt<OptimizationProblemVM>().Adapt<OptimizationResultVM>();
-                resVM.IndependentVariables = p.X.Adapt<ObservableCollection<IndependentVariableVM>>();
+                var resVM = problem.Adapt<OptimizationProblemVM>().Adapt<OptimizationResultVM>();
+                resVM.DecisionVariables = p.DecisionVariables.Adapt<ObservableCollection<DecisionVariableVM>>();
                 resVM.ObjectiveFunctionResult = problem.GetValueInPoint(p);
                 OptimizationProblemResult = resVM;
 
@@ -144,21 +148,19 @@ public class OptimizationPageVM : BaseVM, INotifyDataErrorInfo
         }
     }
 
-    private RelayCommand _showPlot;
-
     public RelayCommand ShowPlot
     {
         get
         {
             return _showPlot ??= new RelayCommand(async o =>
             {
-                switch (OptimizationProblemResult.IndependentVariables.Count)
+                switch (OptimizationProblemResult.DecisionVariables.Count)
                 {
                     case 1:
                         break;
                     case 2:
                         await _dialogService.ShowDialog<ChartDirectorCharts>(OptimizationProblemResult);
-                        
+
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -169,7 +171,8 @@ public class OptimizationPageVM : BaseVM, INotifyDataErrorInfo
 
     public IEnumerable GetErrors(string? propertyName)
     {
-        var errors = _validator.Validate(this).Errors.Where(e=>e.PropertyName==propertyName);
+        var errors = _validator.Validate(this).Errors.Where(e => e.PropertyName == propertyName);
+
         return errors;
     }
 
@@ -178,11 +181,12 @@ public class OptimizationPageVM : BaseVM, INotifyDataErrorInfo
         get
         {
             var res = _validator.Validate(this);
+
             return !res.IsValid || OptimizationProblemVM is null || OptimizationProblemVM.HasErrors;
         }
     }
 
     public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
-
-    
 }
+
+

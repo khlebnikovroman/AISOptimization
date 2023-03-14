@@ -1,4 +1,4 @@
-﻿namespace AISOptimization.Core;
+﻿namespace AISOptimization.Domain;
 
 public static class StringExtension
 {
@@ -12,4 +12,6 @@ public static class StringExtension
         return false;
     }
 }
+
+
 

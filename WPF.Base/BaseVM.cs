@@ -1,11 +1,10 @@
-﻿using System.Collections;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 
 namespace WPF.Base;
 
-public abstract class BaseVM: INotifyPropertyChanged
+public abstract class BaseVM : INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -14,3 +13,4 @@ public abstract class BaseVM: INotifyPropertyChanged
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }
+

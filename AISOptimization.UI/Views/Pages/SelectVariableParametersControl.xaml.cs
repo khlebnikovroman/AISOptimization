@@ -1,7 +1,7 @@
-﻿using System.Windows;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 
 using AISOptimization.Utils;
+using AISOptimization.Utils.Dialog;
 
 
 namespace AISOptimization.Views.Pages;
@@ -29,5 +29,7 @@ public partial class SelectVariableParametersControl : IViewWithVM<SelectVariabl
 
     public SelectVariableParametersControlVM ViewModel { get; set; }
 }
+
+
 
 

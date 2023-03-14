@@ -1,13 +1,9 @@
-﻿using System.Windows;
-using System.Windows.Controls;
-
-using Wpf.Ui.Controls;
-
-
-namespace AISOptimization.Utils;
+﻿namespace AISOptimization.Utils.Dialog;
 
 public interface IDialogAware : IViewWithVM
 {
     public object Footer { get; }
 }
+
+
 

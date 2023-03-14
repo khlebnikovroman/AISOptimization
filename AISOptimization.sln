@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPF.Base", "WPF.Base\WPF.Ba
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UI", "UI", "{30F06017-CC3A-47FF-9772-9F5AE9A8C207}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "testChatGpt", "testChatGpt\testChatGpt.csproj", "{99425A62-5899-4010-8D67-2692B3038F20}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,6 +28,10 @@ Global
 		{01031C9E-721E-4398-9A32-65F2941C86C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{01031C9E-721E-4398-9A32-65F2941C86C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{01031C9E-721E-4398-9A32-65F2941C86C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{99425A62-5899-4010-8D67-2692B3038F20}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99425A62-5899-4010-8D67-2692B3038F20}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99425A62-5899-4010-8D67-2692B3038F20}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99425A62-5899-4010-8D67-2692B3038F20}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{4E5FBE9D-C24D-47ED-8725-A2970EF0E4EE} = {30F06017-CC3A-47FF-9772-9F5AE9A8C207}

@@ -1,15 +1,14 @@
 ﻿using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.ComponentModel;
 
-using AISOptimization.Core.Common;
-using AISOptimization.Core.Parameters;
-using AISOptimization.Core.Restrictions;
+using AISOptimization.Domain.Common;
+using AISOptimization.Domain.Constraints;
+using AISOptimization.Domain.Parameters;
 
 using org.matheval;
 
 
-namespace AISOptimization.Core;
+namespace AISOptimization.Domain;
 
 public enum Extremum
 {
@@ -27,41 +26,44 @@ public class OptimizationProblem : Entity
 
     public OptimizationProblem()
     {
-        StaticVariables.CollectionChanged += (sender, args) =>
+        Constants.CollectionChanged += (sender, args) =>
         {
-            foreach (var secondRoundRestriction in SecondRoundRestrictions)
+            foreach (var secondRoundConstraint in SecondRoundConstraints)
             {
-                foreach (StaticVariable staticVariable in args.NewItems)
+                foreach (Constant staticVariable in args.NewItems)
                 {
-                    if (secondRoundRestriction.Expression.GetVariables().Contains(staticVariable.Key))
+                    if (secondRoundConstraint.ConstraintFunction.GetVariables().Contains(staticVariable.Key))
                     {
-                        secondRoundRestriction.Expression.Bind(staticVariable.Key, staticVariable.Value);
+                        secondRoundConstraint.ConstraintFunction.Bind(staticVariable.Key, staticVariable.Value);
                     }
                 }
             }
         };
     }
 
-    public OptimizationProblem(string objectiveFunction, IEnumerable<IVariable> independentVariables, IEnumerable<IVariable> staticVariables) : this()
+    public OptimizationProblem(string objectiveFunction, IEnumerable<IVariable> decisionVariables, IEnumerable<IVariable> constants) : this()
     {
         ObjectiveFunction = new FuncExpression(objectiveFunction);
-        foreach (var independentVariable in independentVariables)
+
+        foreach (var decisionVariable in decisionVariables)
         {
-            VectorX.Add(new IndependentVariable
-                            {FirstRoundRestriction = new FirstRoundRestriction(), Key = independentVariable.Key,});
+            DecisionVariables.Add(new DecisionVariable
+                                      {FirstRoundConstraint = new FirstRoundConstraint(), Key = decisionVariable.Key,});
         }
-        
-        foreach (var staticVariable in staticVariables)
+
+        foreach (var staticVariable in constants)
         {
-            StaticVariables.Add(new StaticVariable
-                                    {Key = staticVariable.Key,});
+            Constants.Add(new Constant
+                              {Key = staticVariable.Key,});
         }
     }
 
     public Extremum Extremum { get; set; }
 
+    public string ProblemText { get; set; }
     public string ObjectiveParameter { get; set; }
     public string ObjectiveFunctionDescription { get; set; }
+
     public FuncExpression ObjectiveFunction
     {
         get => _objectiveFunction;
@@ -72,10 +74,9 @@ public class OptimizationProblem : Entity
         }
     }
 
-    public List<SecondRoundRestriction> SecondRoundRestrictions { get; init; } = new ();
-    public List<IndependentVariable> VectorX { get; init; }=new ();
-    public ObservableCollection<StaticVariable> StaticVariables { get; init; }=new ();
-    
+    public List<SecondRoundConstraint> SecondRoundConstraints { get; init; } = new();
+    public List<DecisionVariable> DecisionVariables { get; init; } = new();
+    public ObservableCollection<Constant> Constants { get; init; } = new();
 
 
     public static IEnumerable<string> GetVariables(string expression)
@@ -100,11 +101,12 @@ public class OptimizationProblem : Entity
 
     public double GetValueInPoint(Point point)
     {
-        foreach (var xVariable in point.X)
+        foreach (var xVariable in point.DecisionVariables)
         {
             ObjectiveFunction.Bind(xVariable.Key, xVariable.Value);
         }
-        foreach (var xVariable in StaticVariables)
+
+        foreach (var xVariable in Constants)
         {
             ObjectiveFunction.Bind(xVariable.Key, xVariable.Value);
         }
@@ -120,22 +122,24 @@ public class OptimizationProblem : Entity
         }
     }
 
-    public bool IsSecondRoundRestrictionsSatisfied(Point point)
+    public bool IsSecondRoundConstraintsSatisfied(Point point)
     {
-        return SecondRoundRestrictions.All(r => r.IsSatisfied(point));
+        return SecondRoundConstraints.All(r => r.IsSatisfied(point));
     }
 
     public Point CreatePoint()
     {
         var point = new Point();
 
-        foreach (var independentVariable in VectorX)
+        foreach (var decisionVariable in DecisionVariables)
         {
-            point.X.Add((IndependentVariable) independentVariable.Clone());
+            point.DecisionVariables.Add((DecisionVariable) decisionVariable.Clone());
         }
 
         return point;
     }
 }
+
+
 
 

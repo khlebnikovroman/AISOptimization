@@ -1,23 +1,23 @@
 ﻿using System.Text;
 
 
-namespace AISOptimization.Core.Parameters;
+namespace AISOptimization.Domain.Parameters;
 
 //todo delete
 public class Point
 {
     public Point()
     {
-        X = new List<IndependentVariable>();
+        DecisionVariables = new List<DecisionVariable>();
     }
 
-    public List<IndependentVariable> X { get; set; }
+    public List<DecisionVariable> DecisionVariables { get; set; }
 
     public override string ToString()
     {
         var builder = new StringBuilder();
 
-        foreach (var variable in X)
+        foreach (var variable in DecisionVariables)
         {
             builder.Append($"{variable.Key} = {variable.Value}; ");
         }
@@ -25,4 +25,6 @@ public class Point
         return builder.ToString();
     }
 }
+
+
 

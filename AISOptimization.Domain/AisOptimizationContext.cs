@@ -1,24 +1,26 @@
-﻿using AISOptimization.Core.Parameters;
-using AISOptimization.Core.Restrictions;
+﻿using AISOptimization.Domain.Constraints;
+using AISOptimization.Domain.Parameters;
 
 using Microsoft.EntityFrameworkCore;
 
 
-namespace AISOptimization.Core;
+namespace AISOptimization.Domain;
 
 public class AisOptimizationContext : DbContext
 {
     public string DbPath { get; }
 
     public DbSet<OptimizationProblem> OptimizationProblems { get; set; }
-    public DbSet<FirstRoundRestriction> FirstRoundRestrictions { get; set; }
-    public DbSet<SecondRoundRestriction> SecondRoundRestrictions { get; set; }
-    public DbSet<StaticVariable> StaticVariables { get; set; }
-    public DbSet<IndependentVariable> IndependentVariables { get; set; }
+    public DbSet<FirstRoundConstraint> FirstRoundConstraints { get; set; }
+    public DbSet<SecondRoundConstraint> SecondRoundConstraints { get; set; }
+    public DbSet<Constant> Constants { get; set; }
+    public DbSet<DecisionVariable> DecisionVariables { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder options)
     {
         options.UseSqlite("Data Source=AisOptimization.db");
     }
 }
+
+
 

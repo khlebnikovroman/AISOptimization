@@ -1,8 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
                     xmlns:controls="clr-namespace:AISOptimization.Controls">
-                     <Style TargetType="{x:Type controls:LabeledControlPresenter}">
+    <Style TargetType="{x:Type controls:LabeledControlPresenter}">
         <Setter Property="Margin" Value="0" />
         <Setter Property="Padding" Value="0" />
         <Setter Property="MinHeight" Value="0" />
@@ -26,10 +25,10 @@
                             FontWeight="DemiBold"
                             Text="{TemplateBinding HeaderText}" />
 
-                        
-                        <ContentPresenter  Grid.Row="1" Margin="0,8,0,0" Content="{TemplateBinding Content}" />
-                        
-                        
+
+                        <ContentPresenter Grid.Row="1" Margin="0,8,0,0" Content="{TemplateBinding Content}" />
+
+
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="HeaderText" Value="{x:Null}">

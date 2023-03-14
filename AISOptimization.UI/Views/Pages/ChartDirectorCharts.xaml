@@ -11,7 +11,7 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
         <StackPanel Margin="0,6" x:Key="Footer" Orientation="Horizontal" HorizontalAlignment="Center">
-            <ui:Button Content="Закрыть" Appearance="Secondary" Command="{Binding ViewModel.CloseCommand}"/>
+            <ui:Button Content="Закрыть" Appearance="Secondary" Command="{Binding ViewModel.CloseCommand}" />
         </StackPanel>
     </UserControl.Resources>
     <Grid>

@@ -5,15 +5,15 @@ using System.Windows;
 using System.Windows.Data;
 
 
-namespace AISOptimization.Utils;
+namespace AISOptimization.Utils.Converters;
 
-public class EmptyCollectionToVisibilityConverter: IValueConverter
+public class EmptyCollectionToVisibilityConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
         if (value is ICollection values)
         {
-            if (values.Count==0)
+            if (values.Count == 0)
             {
                 return Visibility.Collapsed;
             }
@@ -27,3 +27,5 @@ public class EmptyCollectionToVisibilityConverter: IValueConverter
         throw new NotImplementedException();
     }
 }
+
+

@@ -8,8 +8,9 @@
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance local:ChartDirectorSurfaceProjection}"
              d:DesignHeight="300" d:DesignWidth="300">
-    
-        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-        <chartDirector:WPFChartViewer x:Name="WPFChartViewer1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="8,8,0,0" />
+
+    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <chartDirector:WPFChartViewer x:Name="WPFChartViewer1" HorizontalAlignment="Stretch"
+                                      VerticalAlignment="Stretch" Margin="8,8,0,0" />
     </Grid>
 </UserControl>

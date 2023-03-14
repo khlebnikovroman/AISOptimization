@@ -12,3 +12,5 @@ public static class ValidationResultExtension
         return result.Errors.Any(x => x.PropertyName == propertyName);
     }
 }
+
+

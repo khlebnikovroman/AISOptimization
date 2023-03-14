@@ -6,7 +6,8 @@
             <Setter.Value>
                 <ControlTemplate>
                     <Grid>
-                        <Border BorderBrush="#FFCB2E2E" BorderThickness="2" CornerRadius="3" Background="#11FF0000" IsHitTestVisible="False" x:Name="errorBorder"/>
+                        <Border BorderBrush="#FFCB2E2E" BorderThickness="2" CornerRadius="3" Background="#11FF0000"
+                                IsHitTestVisible="False" x:Name="errorBorder" />
                         <AdornedElementPlaceholder x:Name="placeholder" />
                     </Grid>
                 </ControlTemplate>
@@ -15,11 +16,11 @@
         <Style.Triggers>
 
             <Trigger Property="Validation.HasError" Value="True">
-                <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}" />
+                <Setter Property="ToolTip"
+                        Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}" />
             </Trigger>
         </Style.Triggers>
     </Style>
-    
-    
+
 
 </ResourceDictionary>

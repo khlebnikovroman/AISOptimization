@@ -1,7 +1,7 @@
-﻿using AISOptimization.Core.Parameters;
+﻿using AISOptimization.Domain.Parameters;
 
 
-namespace AISOptimization.Core.OptimizationMethods;
+namespace AISOptimization.Domain.OptimizationMethods;
 
 public class ScanMethod : IOptimizationMethod
 {
@@ -25,4 +25,6 @@ public class ScanMethod : IOptimizationMethod
         throw new NotImplementedException();
     }
 }
+
+
 

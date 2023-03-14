@@ -1,24 +1,24 @@
-﻿using AISOptimization.Core.Parameters;
-using AISOptimization.Core.Restrictions;
+﻿using AISOptimization.Domain.Constraints;
+using AISOptimization.Domain.Parameters;
 
 
-namespace AISOptimization.Core.OptimizationMethods;
+namespace AISOptimization.Domain.OptimizationMethods;
 
 public class ComplexBoxMethod : IOptimizationMethod
 {
+    private readonly OptimizationProblem _optimizationProblem;
+    private readonly int vertexCount;
     private Point _bestVertex;
     private Point _center;
     private List<Point> _complex;
     private double _eps;
-    private readonly OptimizationProblem _optimizationProblem;
     private Point _worstVertex;
-    private readonly int vertexCount;
 
     public ComplexBoxMethod(OptimizationProblem optimizationProblem, double eps)
     {
         _optimizationProblem = optimizationProblem;
         _eps = eps;
-        var varCount = _optimizationProblem.CreatePoint().X.Count;
+        var varCount = _optimizationProblem.CreatePoint().DecisionVariables.Count;
         vertexCount = varCount <= 5 ? 2 * varCount : varCount + 1;
     }
 
@@ -41,7 +41,7 @@ public class ComplexBoxMethod : IOptimizationMethod
 
             var newVertex = GetNewVertexInsteadWorst();
 
-            while (!_optimizationProblem.IsSecondRoundRestrictionsSatisfied(newVertex)) // пока ограничение нарушено
+            while (!_optimizationProblem.IsSecondRoundConstraintsSatisfied(newVertex)) // пока ограничение нарушено
             {
                 HalfShiftVertex1ToVertex2(newVertex, _center);
             }
@@ -75,10 +75,10 @@ public class ComplexBoxMethod : IOptimizationMethod
             {
                 var vertex = _optimizationProblem.CreatePoint();
 
-                foreach (var variable in vertex.X)
+                foreach (var variable in vertex.DecisionVariables)
                 {
-                    variable.Value = variable.FirstRoundRestriction.Min +
-                                     rnd.NextDouble() * (variable.FirstRoundRestriction.Max - variable.FirstRoundRestriction.Min);
+                    variable.Value = variable.FirstRoundConstraint.Min +
+                                     rnd.NextDouble() * (variable.FirstRoundConstraint.Max - variable.FirstRoundConstraint.Min);
                 }
 
                 complex.Add(vertex);
@@ -89,20 +89,20 @@ public class ComplexBoxMethod : IOptimizationMethod
 
         var allPoints = GetRandomPoints();
 
-        while (allPoints.All(p => !_optimizationProblem.IsSecondRoundRestrictionsSatisfied(p)))
+        while (allPoints.All(p => !_optimizationProblem.IsSecondRoundConstraintsSatisfied(p)))
         {
             allPoints = GetRandomPoints();
         }
 
-        var fixedPoints = allPoints.Where(p => _optimizationProblem.IsSecondRoundRestrictionsSatisfied(p)).ToList();
+        var fixedPoints = allPoints.Where(p => _optimizationProblem.IsSecondRoundConstraintsSatisfied(p)).ToList();
         var unfixedPoints = allPoints.Where(p => !fixedPoints.Contains(p)).ToList();
 
         while (unfixedPoints.Count != 0)
         {
             var unfixedPoint = unfixedPoints[0];
 
-            while (!_optimizationProblem.IsSecondRoundRestrictionsSatisfied(unfixedPoint)
-                   || unfixedPoint.X.Any(p => p.FirstRoundRestriction.IsSatisfied(p.Value) != FirstRoundRestrictionSatisfactory.OK))
+            while (!_optimizationProblem.IsSecondRoundConstraintsSatisfied(unfixedPoint)
+                   || unfixedPoint.DecisionVariables.Any(p => p.FirstRoundConstraint.IsSatisfied(p.Value) != FirstRoundConstraintSatisfactory.OK))
             {
                 ShiftVertex(unfixedPoint);
             }
@@ -116,10 +116,10 @@ public class ComplexBoxMethod : IOptimizationMethod
         // Смещение вершины к центру вершин комплекса
         void ShiftVertex(Point vertex)
         {
-            for (var i = 0; i < vertex.X.Count; i++)
+            for (var i = 0; i < vertex.DecisionVariables.Count; i++)
             {
-                var variable = vertex.X[i];
-                variable.Value = 0.5 * (variable.Value + 1.0 / fixedPoints.Count * fixedPoints.Sum(p => p.X[i].Value));
+                var variable = vertex.DecisionVariables[i];
+                variable.Value = 0.5 * (variable.Value + 1.0 / fixedPoints.Count * fixedPoints.Sum(p => p.DecisionVariables[i].Value));
             }
         }
     }
@@ -133,9 +133,10 @@ public class ComplexBoxMethod : IOptimizationMethod
     {
         var center = _optimizationProblem.CreatePoint();
 
-        for (var i = 0; i < center.X.Count; i++)
+        for (var i = 0; i < center.DecisionVariables.Count; i++)
         {
-            center.X[i].Value = 1.0 / (vertexCount - 1) * (_complex.Sum(p => p.X[i].Value) - _worstVertex.X[i].Value);
+            center.DecisionVariables[i].Value = 1.0 / (vertexCount - 1) *
+                                                (_complex.Sum(p => p.DecisionVariables[i].Value) - _worstVertex.DecisionVariables[i].Value);
         }
 
         return center;
@@ -150,45 +151,46 @@ public class ComplexBoxMethod : IOptimizationMethod
     {
         double sum = 0;
 
-        for (var i = 0; i < _center.X.Count; i++)
+        for (var i = 0; i < _center.DecisionVariables.Count; i++)
         {
-            sum += Math.Abs(_center.X[i].Value - _worstVertex.X[i].Value) + Math.Abs(_center.X[i].Value - _bestVertex.X[i].Value);
+            sum += Math.Abs(_center.DecisionVariables[i].Value - _worstVertex.DecisionVariables[i].Value) +
+                   Math.Abs(_center.DecisionVariables[i].Value - _bestVertex.DecisionVariables[i].Value);
         }
 
-        return 1.0 / (2 * _center.X.Count) * sum;
+        return 1.0 / (2 * _center.DecisionVariables.Count) * sum;
     }
 
     private Point GetNewVertexInsteadWorst()
     {
         var newPoint = _optimizationProblem.CreatePoint();
 
-        for (var i = 0; i < _center.X.Count; i++)
+        for (var i = 0; i < _center.DecisionVariables.Count; i++)
         {
-            newPoint.X[i].Value = 2.3 * _center.X[i].Value - 1.3 * _worstVertex.X[i].Value;
+            newPoint.DecisionVariables[i].Value = 2.3 * _center.DecisionVariables[i].Value - 1.3 * _worstVertex.DecisionVariables[i].Value;
         }
 
-        foreach (var variable in newPoint.X)
+        foreach (var variable in newPoint.DecisionVariables)
         {
-            var compareResult = variable.FirstRoundRestriction.IsSatisfied(variable.Value);
+            var compareResult = variable.FirstRoundConstraint.IsSatisfied(variable.Value);
 
             switch (compareResult)
             {
-                case FirstRoundRestrictionSatisfactory.LessThanMin:
-                    variable.Value = variable.FirstRoundRestriction.Min;
+                case FirstRoundConstraintSatisfactory.LessThanMin:
+                    variable.Value = variable.FirstRoundConstraint.Min;
 
                     break;
-                case FirstRoundRestrictionSatisfactory.LessOrEqualMin:
-                    variable.Value = variable.FirstRoundRestriction.Min + _eps;
+                case FirstRoundConstraintSatisfactory.LessOrEqualMin:
+                    variable.Value = variable.FirstRoundConstraint.Min + _eps;
 
                     break;
-                case FirstRoundRestrictionSatisfactory.OK:
+                case FirstRoundConstraintSatisfactory.OK:
                     break;
-                case FirstRoundRestrictionSatisfactory.BiggerOrEqualMax:
-                    variable.Value = variable.FirstRoundRestriction.Max;
+                case FirstRoundConstraintSatisfactory.BiggerOrEqualMax:
+                    variable.Value = variable.FirstRoundConstraint.Max;
 
                     break;
-                case FirstRoundRestrictionSatisfactory.BiggerThanMax:
-                    variable.Value = variable.FirstRoundRestriction.Max - _eps;
+                case FirstRoundConstraintSatisfactory.BiggerThanMax:
+                    variable.Value = variable.FirstRoundConstraint.Max - _eps;
 
                     break;
                 default:
@@ -201,11 +203,13 @@ public class ComplexBoxMethod : IOptimizationMethod
 
     private void HalfShiftVertex1ToVertex2(Point vertex1, Point vertex2)
     {
-        for (var i = 0; i < vertex1.X.Count; i++)
+        for (var i = 0; i < vertex1.DecisionVariables.Count; i++)
         {
-            vertex1.X[i].Value = 0.5 * (vertex1.X[i].Value + vertex2.X[i].Value);
+            vertex1.DecisionVariables[i].Value = 0.5 * (vertex1.DecisionVariables[i].Value + vertex2.DecisionVariables[i].Value);
         }
     }
 }
+
+
 
 

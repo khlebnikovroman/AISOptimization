@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 
 using AISOptimization.Utils;
+using AISOptimization.Utils.Dialog;
 
 
 namespace AISOptimization.Views.Pages;
@@ -18,15 +19,22 @@ public partial class ChartDirectorCharts : IViewWithVM<ChartDirectorChartVM>, ID
         Projection.Content = projection;
     }
 
-    public ChartDirectorChartVM ViewModel { get; set; }
-    public object Footer { get
-    {
-        var footer = Resources["Footer"] as StackPanel;
-
-        footer.DataContext ??= this;
-
-        return footer;
-    }}
     public Action FinishInteraction { get; set; }
+
+    public object Footer
+    {
+        get
+        {
+            var footer = Resources["Footer"] as StackPanel;
+
+            footer.DataContext ??= this;
+
+            return footer;
+        }
+    }
+
+    public ChartDirectorChartVM ViewModel { get; set; }
 }
+
+
 

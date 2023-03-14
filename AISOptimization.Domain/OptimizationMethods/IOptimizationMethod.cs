@@ -1,10 +1,12 @@
-﻿using AISOptimization.Core.Parameters;
+﻿using AISOptimization.Domain.Parameters;
 
 
-namespace AISOptimization.Core.OptimizationMethods;
+namespace AISOptimization.Domain.OptimizationMethods;
 
 public interface IOptimizationMethod
 {
     public Point SolveProblem();
 }
+
+
 

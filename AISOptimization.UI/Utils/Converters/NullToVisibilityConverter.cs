@@ -4,9 +4,9 @@ using System.Windows;
 using System.Windows.Data;
 
 
-namespace AISOptimization.Utils;
+namespace AISOptimization.Utils.Converters;
 
-public class NullToVisibilityConverter: IValueConverter
+public class NullToVisibilityConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
@@ -18,3 +18,5 @@ public class NullToVisibilityConverter: IValueConverter
         throw new NotImplementedException();
     }
 }
+
+

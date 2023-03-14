@@ -1,15 +1,9 @@
-﻿using System.Collections;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations.Schema;
-
-using AISOptimization.Core.Common;
-
-using FluentValidation;
+﻿using AISOptimization.Domain.Common;
 
 
-namespace AISOptimization.Core.Restrictions;
+namespace AISOptimization.Domain.Constraints;
 
-public enum FirstRoundRestrictionSatisfactory
+public enum FirstRoundConstraintSatisfactory
 {
     LessThanMin,
     LessOrEqualMin,
@@ -19,7 +13,7 @@ public enum FirstRoundRestrictionSatisfactory
 }
 
 
-public class FirstRoundRestriction : Entity, ICloneable
+public class FirstRoundConstraint : Entity, ICloneable
 {
     private string _biggerSign = "<";
 
@@ -66,22 +60,22 @@ public class FirstRoundRestriction : Entity, ICloneable
     {
         return MemberwiseClone();
     }
-    
-    public FirstRoundRestrictionSatisfactory IsSatisfied(double value)
+
+    public FirstRoundConstraintSatisfactory IsSatisfied(double value)
     {
         switch (LessSign)
         {
             case "<":
                 if (value <= Min)
                 {
-                    return FirstRoundRestrictionSatisfactory.LessOrEqualMin;
+                    return FirstRoundConstraintSatisfactory.LessOrEqualMin;
                 }
 
                 break;
             case "≤":
                 if (value < Min)
                 {
-                    return FirstRoundRestrictionSatisfactory.LessThanMin;
+                    return FirstRoundConstraintSatisfactory.LessThanMin;
                 }
 
                 break;
@@ -92,21 +86,23 @@ public class FirstRoundRestriction : Entity, ICloneable
             case "<":
                 if (value >= Max)
                 {
-                    return FirstRoundRestrictionSatisfactory.BiggerOrEqualMax;
+                    return FirstRoundConstraintSatisfactory.BiggerOrEqualMax;
                 }
 
                 break;
             case "≤":
                 if (value > Max)
                 {
-                    return FirstRoundRestrictionSatisfactory.BiggerThanMax;
+                    return FirstRoundConstraintSatisfactory.BiggerThanMax;
                 }
 
                 break;
         }
 
-        return FirstRoundRestrictionSatisfactory.OK;
+        return FirstRoundConstraintSatisfactory.OK;
     }
 }
+
+
 
 

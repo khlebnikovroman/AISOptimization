@@ -1,14 +1,11 @@
-﻿using AISOptimization.Core.Restrictions;
-using AISOptimization.UI.VM.VMs;
-
-using FluentValidation;
+﻿using FluentValidation;
 
 
 namespace AISOptimization.VMs.Validators;
 
-public class FirstRoundRestrictionVMValidator : AbstractValidator<FirstRoundRestrictionVM>
+public class FirstRoundConstraintVMValidator : AbstractValidator<FirstRoundConstraintVM>
 {
-    public FirstRoundRestrictionVMValidator()
+    public FirstRoundConstraintVMValidator()
     {
         CascadeMode = CascadeMode.Continue;
 
@@ -21,4 +18,6 @@ public class FirstRoundRestrictionVMValidator : AbstractValidator<FirstRoundRest
             .WithMessage("Нижняя граница должна быть меньше верхней");
     }
 }
+
+
 

@@ -1,14 +1,11 @@
-﻿using AISOptimization.Core;
-using AISOptimization.Core.Restrictions;
-using AISOptimization.VMs.Validators;
+﻿using AISOptimization.Domain;
 
 using FluentValidation;
-using FluentValidation.Results;
 
 
-namespace AISOptimization.Views.Pages;
+namespace AISOptimization.Views.Validators;
 
-public class OptimizationProblemValidator: AbstractValidator<OptimizationProblem>
+public class OptimizationProblemValidator : AbstractValidator<OptimizationProblem>
 {
     // public OptimizationProblemValidator()
     // {
@@ -21,3 +18,5 @@ public class OptimizationProblemValidator: AbstractValidator<OptimizationProblem
     //     
     // }
 }
+
+
