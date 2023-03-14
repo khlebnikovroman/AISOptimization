@@ -15,11 +15,13 @@ public class AisOptimizationContext : DbContext
     public DbSet<SecondRoundConstraint> SecondRoundConstraints { get; set; }
     public DbSet<Constant> Constants { get; set; }
     public DbSet<DecisionVariable> DecisionVariables { get; set; }
+    public DbSet<User> Users { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder options)
     {
         options.UseSqlite("Data Source=AisOptimization.db");
     }
+    
 }
 
 

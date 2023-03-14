@@ -30,13 +30,10 @@ public class OptimizationPageVM : BaseVM, INotifyDataErrorInfo
     private readonly INavigationService _navigationService;
     private readonly AbstractValidator<OptimizationPageVM> _validator;
 
-    private RelayCommand _addSecondRoundConstraint;
 
-    private RelayCommand _inputObjectiveFunction;
 
     private RelayCommand _optimizeCommand;
 
-    private RelayCommand _removeSecondRoundConstraint;
 
     private RelayCommand _showPlot;
 
@@ -48,70 +45,15 @@ public class OptimizationPageVM : BaseVM, INotifyDataErrorInfo
     }
 
     public List<string> VariablesKeys { get; private set; }
-    public string SecondRoundConstraintInput { get; set; }
-    public string ObjectiveParameter { get; set; } = "z";
 
-    public string ObjectiveFunctionInput { get; set; } = "x^2 + y^2";
 
-    public OptimizationProblemVM OptimizationProblemVM { get; set; }
     public OptimizationResultVM OptimizationProblemResult { get; set; }
 
-    public RelayCommand InputObjectiveFunction
-    {
-        get
-        {
-            return _inputObjectiveFunction ??= new RelayCommand(async o =>
-            {
-                var res = await _dialogService.ShowDialog<SelectVariableParametersControl>(ObjectiveFunctionInput) as OptimizationProblemVM;
+    public ProblemEditControlVM ProblemEditControlVm { get; set; }
 
+    
 
-                if (res != null)
-                {
-                    OptimizationProblemVM = res;
-                    OptimizationProblemVM.Extremum = Extremum.Max;
-                    OptimizationProblemVM.ObjectiveParameter = ObjectiveParameter;
-                    VariablesKeys = OptimizationProblem.GetVariables(OptimizationProblemVM.ObjectiveFunction.Formula).ToList();
-                    OptimizationProblemResult = null;
-                }
-            });
-        }
-    }
-
-    public RelayCommand AddSecondRoundConstraint
-    {
-        get
-        {
-            return _addSecondRoundConstraint ??= new RelayCommand(o =>
-            {
-                OptimizationProblemVM.SecondRoundConstraints.Add(new SecondRoundConstraintVM
-                {
-                    ConstraintFunction = new FunctionExpressionVM
-                        {Formula = SecondRoundConstraintInput,},
-                });
-
-                SecondRoundConstraintInput = "";
-            }, _ =>
-            {
-                if (SecondRoundConstraintInput is not null)
-                {
-                    return SecondRoundConstraintInput.Length > 0 && !_validator.Validate(this).HasError(nameof(SecondRoundConstraintInput));
-                }
-
-                return false;
-            });
-        }
-    }
-
-    public RelayCommand RemoveSecondRoundConstraint
-    {
-        get
-        {
-            return _removeSecondRoundConstraint ??= new RelayCommand(o =>
-            {
-                OptimizationProblemVM.SecondRoundConstraints.Remove(o as SecondRoundConstraintVM);
-            });
-        }
-    }
+    
 
     public RelayCommand OptimizeCommand
     {
@@ -119,9 +61,7 @@ public class OptimizationPageVM : BaseVM, INotifyDataErrorInfo
         {
             return _optimizeCommand ??= new RelayCommand(o =>
             {
-                var json = JsonSerializer.Serialize(OptimizationProblemVM);
-                File.WriteAllText("json.txt", json);
-                var problem = OptimizationProblemVM.Adapt<OptimizationProblem>();
+                var problem = ProblemEditControlVm.OptimizationProblemVM.Adapt<OptimizationProblem>();
                 var method = new ComplexBoxMethod(problem, 0.001);
                 var p = method.SolveProblem();
                 var resVM = problem.Adapt<OptimizationProblemVM>().Adapt<OptimizationResultVM>();
@@ -144,7 +84,7 @@ public class OptimizationPageVM : BaseVM, INotifyDataErrorInfo
                 //
                 // mb.ButtonRightClick += (_, _) => mb.Close();
                 // mb.ButtonLeftClick += (_, _) => mb.Close();
-            }, o => OptimizationProblemVM is not null && !OptimizationProblemVM.HasErrors);
+            }, o => ProblemEditControlVm.OptimizationProblemVM is not null && !ProblemEditControlVm.OptimizationProblemVM.HasErrors);
         }
     }
 
@@ -182,7 +122,7 @@ public class OptimizationPageVM : BaseVM, INotifyDataErrorInfo
         {
             var res = _validator.Validate(this);
 
-            return !res.IsValid || OptimizationProblemVM is null || OptimizationProblemVM.HasErrors;
+            return !res.IsValid || ProblemEditControlVm is null || ProblemEditControlVm.OptimizationProblemVM is null || ProblemEditControlVm.OptimizationProblemVM.HasErrors;
         }
     }
 

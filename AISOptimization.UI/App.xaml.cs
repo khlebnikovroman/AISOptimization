@@ -54,6 +54,9 @@ public partial class App : Application
         builder.RegisterType<ChartDirectorCharts>().AsSelf();
         builder.RegisterType<ChartDirectorSurfaceProjection>().AsSelf();
         builder.RegisterType<ChartDirectorChartVM>().AsSelf();
+        builder.RegisterType<ProblemEditControl>().AsSelf();
+        builder.RegisterType<ProblemEditControlVM>().AsSelf();
+        
 
         builder.Register(c => new AutofacAdapter()).As<IServiceProvider>().SingleInstance();
 

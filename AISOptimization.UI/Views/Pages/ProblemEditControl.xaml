@@ -1,0 +1,231 @@
+﻿<UserControl x:Class="AISOptimization.Views.Pages.ProblemEditControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:AISOptimization.Views.Pages"
+             mc:Ignorable="d"
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+             xmlns:controls="clr-namespace:AISOptimization.Controls"
+             xmlns:converters="clr-namespace:AISOptimization.Utils.Converters"
+             xmlns:sys="clr-namespace:System;assembly=System.Runtime"
+             xmlns:core="clr-namespace:AISOptimization.Domain;assembly=AISOptimization.Domain"
+             d:DataContext="{d:DesignInstance local:ProblemEditControl}"
+             ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
+             ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+             d:DesignHeight="800" d:DesignWidth="500">
+    <UserControl.Resources>
+        <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
+        <converters:EmptyCollectionToVisibilityConverter x:Key="EmptyCollectionToVisibilityConverter" />
+        <converters:EnumDisplayNameConverter x:Key="EnumDisplayNameConverter" />
+        <ObjectDataProvider x:Key="ExtremumProvider"
+                            MethodName="GetValues"
+                            ObjectType="{x:Type sys:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="core:Extremum" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+    </UserControl.Resources>
+    <ScrollViewer>
+                <StackPanel>
+                    <ui:Card>
+                        <TextBlock Text="Ввод функции" />
+                        <ui:Card.Footer>
+
+                            <controls:LabeledControlPresenter HeaderText="Целевая функция">
+
+                                <Grid>
+
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" MinWidth="40" />
+                                        <ColumnDefinition Width="20" />
+                                        <ColumnDefinition Width="1*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <ui:TextBox Grid.Column="0" ClearButtonEnabled="False"
+                                                Text="{Binding ViewModel.ObjectiveParameter,
+                                         UpdateSourceTrigger=PropertyChanged, Mode=TwoWay, ValidatesOnDataErrors=True}" />
+                                    <Label Grid.Column="1" Content="="
+                                           HorizontalContentAlignment="Center"
+                                           VerticalContentAlignment="Center" />
+                                    <ui:TextBox Grid.Column="2"
+
+                                                PlaceholderText="Введите целевую функцию"
+                                                ClearButtonEnabled="False"
+                                                Text="{Binding ViewModel.ObjectiveFunctionInput,Mode=TwoWay,
+                                      UpdateSourceTrigger=PropertyChanged,
+                                         ValidatesOnNotifyDataErrors=True}">
+                                        <ui:TextBox.InputBindings>
+                                            <KeyBinding
+                                                Key="Enter"
+                                                Command="{Binding ViewModel.InputObjectiveFunction}" />
+                                        </ui:TextBox.InputBindings>
+                                    </ui:TextBox>
+                                    <ui:Button Grid.Column="3" Appearance="Primary"
+                                               Command="{Binding ViewModel.InputObjectiveFunction}"
+                                               VerticalAlignment="Bottom"
+                                               Content="Ввод" Icon="Add16"
+                                               Margin="8,0,0,0" Height="34" />
+                                </Grid>
+
+                            </controls:LabeledControlPresenter>
+                        </ui:Card.Footer>
+
+                    </ui:Card>
+                    <StackPanel
+                        Visibility="{Binding ViewModel.OptimizationProblemVM, Converter={StaticResource NullToVisibilityConverter}}">
+                        <ui:Card Margin="0,16,0,0">
+                            <controls:LabeledControlPresenter HeaderText="Тип экстремума">
+                                <ComboBox SelectedItem="{Binding ViewModel.OptimizationProblemVM.Extremum}"
+                                          ItemsSource="{Binding Source={StaticResource ExtremumProvider}}">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock
+                                                Text="{Binding Converter={StaticResource EnumDisplayNameConverter}}" />
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                            </controls:LabeledControlPresenter>
+                        </ui:Card>
+                        <ui:Card Margin="0,16,0,0"
+                                 Visibility="{Binding ViewModel.OptimizationProblemVM.Constants, Converter={StaticResource EmptyCollectionToVisibilityConverter}}">
+                            <TextBlock Text="Константы" />
+                            <ui:Card.Footer>
+                                <ItemsControl Grid.IsSharedSizeScope="True"
+                                              ItemsSource="{Binding ViewModel.OptimizationProblemVM.Constants}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto" SharedSizeGroup="a" />
+                                                    <ColumnDefinition Width="Auto" SharedSizeGroup="b" />
+                                                    <ColumnDefinition SharedSizeGroup="c" />
+                                                </Grid.ColumnDefinitions>
+                                                <ui:TextBox Margin="8,0" MinWidth="100" ClearButtonEnabled="False"
+                                                            Grid.Column="0" Text="{Binding Description}"
+                                                            PlaceholderText="Описание" />
+                                                <Label Grid.Column="1" Content="{Binding Key}"
+                                                       VerticalAlignment="Center"
+                                                       HorizontalAlignment="Center"
+                                                       HorizontalContentAlignment="Center"
+                                                       VerticalContentAlignment="Center"
+                                                       ContentStringFormat=" {0} = " />
+                                                <ui:TextBox Grid.Column="2" Text="{Binding Value}" Margin="9,0,0,0" />
+
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </ui:Card.Footer>
+                        </ui:Card>
+                        <ui:Card Margin="0,16,0,0">
+                            <TextBlock Text="Независимые параметры" />
+                            <ui:Card.Footer>
+                                <ItemsControl Grid.IsSharedSizeScope="True"
+                                              ItemsSource="{Binding ViewModel.OptimizationProblemVM.DecisionVariables,
+                                                   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}">
+
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid Margin="0,0,0,7">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto" SharedSizeGroup="d" />
+                                                    <ColumnDefinition Width="Auto" SharedSizeGroup="a" />
+                                                    <ColumnDefinition Width="Auto" SharedSizeGroup="b" />
+                                                    <ColumnDefinition Width="Auto" SharedSizeGroup="c" />
+                                                    <ColumnDefinition Width="Auto" SharedSizeGroup="b" />
+                                                    <ColumnDefinition Width="Auto" SharedSizeGroup="e" />
+                                                </Grid.ColumnDefinitions>
+                                                <ui:TextBox MinWidth="100"
+                                                            Margin="8,0"
+                                                            Grid.Column="0"
+                                                            ClearButtonEnabled="False"
+                                                            PlaceholderText="Описание"
+                                                            Text="{Binding Description,
+                                                                   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                <ui:TextBox MinWidth="70"
+                                                            Grid.Column="1"
+                                                            ClearButtonEnabled="False"
+                                                            Text="{Binding FirstRoundConstraint.Min,
+                                                                   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,
+                                                                    ValidatesOnNotifyDataErrors=True}" />
+                                                <ComboBox Grid.Column="2" Margin="8,0"
+                                                          SelectedItem="{Binding FirstRoundConstraint.LessSign}"
+                                                          ItemsSource="{Binding FirstRoundConstraint.Signs}" />
+                                                <Label Grid.Column="3" Content="{Binding Key}"
+                                                       HorizontalContentAlignment="Center"
+                                                       VerticalContentAlignment="Center"
+                                                       Margin="8,0" />
+                                                <ComboBox Grid.Column="4" Margin="8,0"
+                                                          Style="{StaticResource ComboBoxWithoutArrow}"
+                                                          SelectedItem="{Binding FirstRoundConstraint.BiggerSign}"
+                                                          ItemsSource="{Binding FirstRoundConstraint.Signs}" />
+                                                <ui:TextBox MinWidth="70"
+                                                            Grid.Column="5"
+                                                            ClearButtonEnabled="False"
+                                                            Text="{Binding FirstRoundConstraint.Max,
+                                                                   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,
+                                                                    ValidatesOnNotifyDataErrors=True}" />
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </ui:Card.Footer>
+                        </ui:Card>
+                        <ui:Card Margin="0,16,0,0">
+                            <TextBlock Text="Ограничения второго рода" />
+                            <ui:Card.Footer>
+                                <StackPanel>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <ui:TextBox
+                                            Text="{Binding ViewModel.SecondRoundConstraintInput,
+                                         Mode=TwoWay,
+                                         UpdateSourceTrigger=PropertyChanged,
+                                         ValidatesOnNotifyDataErrors=True}">
+                                            <ui:TextBox.InputBindings>
+                                                <KeyBinding
+                                                    Key="Enter"
+                                                    Command="{Binding ViewModel.AddSecondRoundConstraint}" />
+                                            </ui:TextBox.InputBindings>
+                                        </ui:TextBox>
+                                        <ui:Button Grid.Column="1"
+                                                   Appearance="Primary"
+                                                   Content="Добавить" Icon="Add16"
+                                                   Margin="8,0,0,0" Height="34"
+                                                   Command="{Binding ViewModel.AddSecondRoundConstraint}" />
+
+                                    </Grid>
+                                    <ItemsControl
+                                        ItemsSource="{Binding ViewModel.OptimizationProblemVM.SecondRoundConstraints}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid Margin="8">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition />
+                                                        <ColumnDefinition Width="Auto" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <ui:TextBox Grid.Column="0"
+                                                                Text="{Binding  ConstraintFunction.Formula}"
+                                                                ClearButtonEnabled="False" />
+                                                    <ui:Button VerticalAlignment="Stretch"
+                                                               HorizontalAlignment="Stretch"
+                                                               Margin="8,0" Grid.Column="1"
+                                                               CommandParameter="{Binding}" Icon="Delete12"
+                                                               Command="{Binding  ViewModel.RemoveSecondRoundConstraint, 
+                                                               RelativeSource={RelativeSource AncestorType=local:ProblemEditControl}}" />
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+                            </ui:Card.Footer>
+                        </ui:Card>
+                    </StackPanel>
+                </StackPanel>
+            </ScrollViewer>
+</UserControl>

@@ -9,15 +9,15 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Autofac" Version="6.5.0"/>
-        <PackageReference Include="ChartDirector.Net.Desktop.Controls" Version="7.0.0"/>
-        <PackageReference Include="FluentValidation" Version="11.5.1"/>
-        <PackageReference Include="Mapster" Version="7.3.0"/>
-        <PackageReference Include="Mapster.DependencyInjection" Version="1.0.0"/>
-        <PackageReference Include="Mapster.EF6" Version="2.0.0"/>
-        <PackageReference Include="Mapster.EFCore" Version="5.1.0"/>
-        <PackageReference Include="PropertyChanged.Fody" Version="4.1.0"/>
-        <PackageReference Include="WPF-UI" Version="3.0.0-preview.1"/>
+        <PackageReference Include="Autofac" Version="6.5.0" />
+        <PackageReference Include="ChartDirector.Net.Desktop.Controls" Version="7.0.0" />
+        <PackageReference Include="FluentValidation" Version="11.5.1" />
+        <PackageReference Include="Mapster" Version="7.3.0" />
+        <PackageReference Include="Mapster.DependencyInjection" Version="1.0.0" />
+        <PackageReference Include="Mapster.EF6" Version="2.0.0" />
+        <PackageReference Include="Mapster.EFCore" Version="5.1.0" />
+        <PackageReference Include="PropertyChanged.Fody" Version="4.1.0" />
+        <PackageReference Include="WPF-UI" Version="3.0.0-preview.1" />
     </ItemGroup>
 
     <ItemGroup>
@@ -29,8 +29,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\AISOptimization.Domain\AISOptimization.Domain.csproj"/>
-        <ProjectReference Include="..\WPF.Base\WPF.Base.csproj"/>
+        <ProjectReference Include="..\AISOptimization.Domain\AISOptimization.Domain.csproj" />
+        <ProjectReference Include="..\WPF.Base\WPF.Base.csproj" />
     </ItemGroup>
 
     <!--    <Target Name="Mapster" AfterTargets="AfterBuild">-->
