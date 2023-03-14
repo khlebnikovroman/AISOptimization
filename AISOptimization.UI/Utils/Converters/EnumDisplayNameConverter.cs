@@ -10,10 +10,19 @@ public class EnumDisplayNameConverter : IValueConverter
 {
     object IValueConverter.Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
-        var myEnum = (Enum) value;
-        var description = GetEnumDescription(myEnum);
+        try
+        {
+            var myEnum = (Enum) value;
+            var description = GetEnumDescription(myEnum);
+            return description;
+        }
+        catch
+        {
+            return null;
+        }
+        
 
-        return description;
+        
     }
 
     object IValueConverter.ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

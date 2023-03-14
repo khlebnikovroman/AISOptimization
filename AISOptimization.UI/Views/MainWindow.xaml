@@ -29,7 +29,13 @@
             IsBackButtonVisible="Collapsed"
             IsPaneToggleVisible="False"
             IsPaneVisible="False"
-            Grid.Row="1" />
+            Grid.Row="1">
+            <ui:NavigationView.ContentOverlay>
+                <Grid>
+                    <ui:Snackbar x:Name="RootSnackBar"/>
+                </Grid>
+            </ui:NavigationView.ContentOverlay>
+        </ui:NavigationView>
 
         <ui:Dialog
             x:Name="RootDialog"

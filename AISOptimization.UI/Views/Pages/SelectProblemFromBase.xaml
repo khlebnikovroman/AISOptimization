@@ -1,0 +1,24 @@
+﻿<UserControl x:Class="AISOptimization.Views.Pages.SelectProblemFromBase"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:AISOptimization.Views.Pages"
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+             d:DataContext="{d:DesignInstance local:SelectProblemFromBase}"
+             ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
+             ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+             mc:Ignorable="d"
+             d:DesignHeight="500" d:DesignWidth="300">
+    <UserControl.Resources>
+        <StackPanel x:Key="Footer" Orientation="Horizontal" HorizontalAlignment="Stretch">
+            <ui:Button Margin="5" Appearance="Primary" Content="Выбрать" Icon="Checkmark12" Command="{Binding ViewModel.SelectProblem}"/>
+            <ui:Button Margin="5" Appearance="Primary" Content="Отмена" Icon="Dismiss12" Command="{Binding ViewModel.CancelCommand}"/>
+        </StackPanel>
+    </UserControl.Resources>
+    <Grid>
+        <StackPanel>
+            <ContentControl x:Name="ProblemListContentControl"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

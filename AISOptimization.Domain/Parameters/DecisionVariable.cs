@@ -8,8 +8,8 @@ namespace AISOptimization.Domain.Parameters;
 
 public class DecisionVariable : Entity, IVariable, ICloneable
 {
-    public string Description { get; set; }
-    public FirstRoundConstraint FirstRoundConstraint { get; set; }
+    public string? Description { get; set; }
+    public virtual FirstRoundConstraint FirstRoundConstraint { get; set; }
 
     public object Clone()
     {

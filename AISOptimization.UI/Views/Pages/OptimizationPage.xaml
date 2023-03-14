@@ -5,6 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:local="clr-namespace:AISOptimization.Views.Pages"
       xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      xmlns:c="clr-namespace:CalcBinding;assembly=CalcBinding"
       xmlns:controls="clr-namespace:AISOptimization.Controls"
       xmlns:sys="clr-namespace:System;assembly=System.Runtime"
       xmlns:converters="clr-namespace:AISOptimization.Utils.Converters"
@@ -32,17 +33,28 @@
             </Grid.RowDefinitions>
 
             <StackPanel>
-                <ContentControl x:Name="ProblemEditContentControl"/>
-                
+                <StackPanel Orientation="Horizontal">
+                     <ui:Button Command="{Binding ViewModel.SelectProblemFromBaseCommand}"
+                         Appearance="Success"
+                                Content="Выбрать задачу из базы"
+                                Margin="5" 
+                                Icon="DatabaseSearch20"/>
+                    <ui:Button Command="{Binding ViewModel.CreateNewOptimizationProblemCommand}" Appearance="Primary" Content="Создать новую задачу" Margin="5" Icon="Add16"/>
+                </StackPanel>
+                <ScrollViewer>
+                    <ContentControl x:Name="ProblemEditContentControl"/>
+                </ScrollViewer>
+                <StackPanel Grid.Row="1" Orientation="Horizontal"
+                            Visibility="{c:Binding ViewModel.ProblemEditControlVm.IsProblemInitialized, FalseToVisibility=Collapsed}"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
+                    <ui:Button Content="{Binding ViewModel.SaveButtonText}" Command="{Binding ViewModel.SaveCommand}" Margin="8"/>
+                    <ui:Button Content="Найти оптимальное значение" Appearance="Primary"
+                               Command="{Binding ViewModel.OptimizeCommand}" Margin="8" />
+                </StackPanel>
             </StackPanel>
             
-            <StackPanel Grid.Row="1" Orientation="Horizontal"
-                        Visibility="{Binding ViewModel.ProblemEditControlVm.OptimizationProblemVM, Converter={StaticResource NullToVisibilityConverter}}"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center">
-                <ui:Button Content="ОПТИМИЗИРОВАТЬ" Appearance="Primary"
-                           Command="{Binding ViewModel.OptimizeCommand}" />
-            </StackPanel>
+            
         </Grid>
         <Grid Grid.Column="1" Grid.RowSpan="2"
               Visibility="{Binding ViewModel.OptimizationProblemResult, Converter={StaticResource NullToVisibilityConverter}}">

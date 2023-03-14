@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.DirectoryServices.ActiveDirectory;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
@@ -28,33 +29,109 @@ public class OptimizationPageVM : BaseVM, INotifyDataErrorInfo
 {
     private readonly MyDialogService _dialogService;
     private readonly INavigationService _navigationService;
+    private readonly UserService _userService;
+    private readonly AisOptimizationContext _context;
+    private readonly ISnackbarService _snackbarService;
     private readonly AbstractValidator<OptimizationPageVM> _validator;
 
+    public bool IsNewProblem { get; set; }
 
-
+    public string SaveButtonText => IsNewProblem ? "Добавить в базу данных" : "Сохранить изменения";
+    
     private RelayCommand _optimizeCommand;
 
 
     private RelayCommand _showPlot;
 
-    public OptimizationPageVM(MyDialogService dialogService, AbstractValidator<OptimizationPageVM> validator, INavigationService navigationService)
+    public OptimizationPageVM(MyDialogService dialogService,
+                              AbstractValidator<OptimizationPageVM> validator,
+                              INavigationService navigationService, 
+                              UserService userService,
+                              AisOptimizationContext context, ISnackbarService snackbarService)
     {
         _dialogService = dialogService;
         _validator = validator;
         _navigationService = navigationService;
+        _userService = userService;
+        _context = context;
+        _snackbarService = snackbarService;
     }
 
     public List<string> VariablesKeys { get; private set; }
-
-
+    
     public OptimizationResultVM OptimizationProblemResult { get; set; }
 
     public ProblemEditControlVM ProblemEditControlVm { get; set; }
 
-    
+    private RelayCommand _selectProblemFromBaseCommand;
+
+    public RelayCommand SelectProblemFromBaseCommand
+    {
+        get
+        {
+            return _selectProblemFromBaseCommand ??= new RelayCommand(async o =>
+            {
+                var res = await _dialogService.ShowDialog<SelectProblemFromBase>(_userService.User) as OptimizationProblemVM;
+
+                if (res is not null)
+                {
+                    ProblemEditControlVm.SetExistingProblem(res);
+                    IsNewProblem = false;
+                }
+            });
+        }
+    }
+
+    private RelayCommand _createNewOptimizationProblemCommand;
+
+    public RelayCommand CreateNewOptimizationProblemCommand
+    {
+        get
+        {
+            return _createNewOptimizationProblemCommand ??= new RelayCommand(o =>
+            {
+                ProblemEditControlVm.SetNewProblem();
+                IsNewProblem = true;
+            });
+        }
+    }
+
+    private RelayCommand _saveCommand;
+
+    public RelayCommand SaveCommand
+    {
+        get
+        {
+            return _saveCommand ??= new RelayCommand(o =>
+            {
+                //todo вынести логику в сервис
+                
+                if (IsNewProblem)
+                {
+                    var problem = ProblemEditControlVm.OptimizationProblemVM.Adapt<OptimizationProblem>();
+                    problem.UserId = _userService.User.Id;
+                    _context.OptimizationProblems.Add(problem);
+                    _context.SaveChanges();
+                    ProblemEditControlVm.OptimizationProblemVM.Id = problem.Id;
+                    IsNewProblem = false;
+                    _snackbarService.Timeout = 2000;
+                    _snackbarService.Show("База данных обновлена", "Задача оптимизации добавлена");
+                }
+                else
+                {
+                    var findedProblem = _context.OptimizationProblems.Find(ProblemEditControlVm.OptimizationProblemVM.Id);
+                    //findedProblem.Adapt(ProblemEditControlVm.OptimizationProblemVM);
+                    ProblemEditControlVm.OptimizationProblemVM.Adapt(findedProblem);
+                    //_context.Update(findedProblem);
+                    _context.SaveChanges();
+                    _snackbarService.Timeout = 2000;
+                    _snackbarService.Show("База данных обновлена", "Задача оптимизации обновлена");
+                }
+            });
+        }
+    }
 
     
-
     public RelayCommand OptimizeCommand
     {
         get
@@ -109,6 +186,9 @@ public class OptimizationPageVM : BaseVM, INotifyDataErrorInfo
         }
     }
 
+
+    #region INotifyDataErrorInfo
+
     public IEnumerable GetErrors(string? propertyName)
     {
         var errors = _validator.Validate(this).Errors.Where(e => e.PropertyName == propertyName);
@@ -127,6 +207,9 @@ public class OptimizationPageVM : BaseVM, INotifyDataErrorInfo
     }
 
     public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
+
+#endregion
+    
 }
 
 

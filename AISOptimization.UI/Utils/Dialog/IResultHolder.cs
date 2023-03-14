@@ -2,7 +2,7 @@
 
 public interface IResultHolder
 {
-    public object Result { get; set; }
+    public object Result { get; }
 }
 
 

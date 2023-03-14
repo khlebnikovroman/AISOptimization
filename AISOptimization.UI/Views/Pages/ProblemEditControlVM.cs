@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 
@@ -22,7 +23,7 @@ namespace AISOptimization.Views.Pages;
 public class ProblemEditControlVM:BaseVM,INotifyDataErrorInfo
 {
     private readonly MyDialogService _dialogService;
-
+    public bool IsProblemInitialized { get; set; }
     public ProblemEditControlVM(MyDialogService dialogService)
     {
         _dialogService = dialogService;
@@ -37,8 +38,26 @@ public class ProblemEditControlVM:BaseVM,INotifyDataErrorInfo
 
     private RelayCommand _inputObjectiveFunction;
 
-    public OptimizationProblemVM OptimizationProblemVM { get; set; }
+    public OptimizationProblemVM OptimizationProblemVM { get; private set; }
 
+    public void SetExistingProblem(OptimizationProblemVM problemVm)
+    {
+        OptimizationProblemVM = problemVm;
+        
+        if (OptimizationProblemVM.ObjectiveFunction is not null)
+        {
+            ObjectiveFunctionInput = OptimizationProblemVM.ObjectiveFunction.Formula;
+        }
+        VariablesKeys = OptimizationProblem.GetVariables(OptimizationProblemVM.ObjectiveFunction.Formula).ToList();
+        ObjectiveParameter = OptimizationProblemVM.ObjectiveParameter;
+        IsProblemInitialized = true;
+    }
+
+    public void SetNewProblem()
+    {
+        OptimizationProblemVM = new OptimizationProblemVM();
+        IsProblemInitialized = false;
+    }
     public RelayCommand InputObjectiveFunction
     {
         get
@@ -46,15 +65,57 @@ public class ProblemEditControlVM:BaseVM,INotifyDataErrorInfo
             return _inputObjectiveFunction ??= new RelayCommand(async o =>
             {
                 var res = await _dialogService.ShowDialog<SelectVariableParametersControl>(ObjectiveFunctionInput) as OptimizationProblemVM;
-
-
+                
+                //todo вынести это куда-нибудь в более подходящее место
                 if (res != null)
                 {
-                    OptimizationProblemVM = res;
-                    OptimizationProblemVM.Extremum = Extremum.Max;
-                    OptimizationProblemVM.ObjectiveParameter = ObjectiveParameter;
-                    VariablesKeys = OptimizationProblem.GetVariables(OptimizationProblemVM.ObjectiveFunction.Formula).ToList();
-                    //OptimizationProblemResult = null;
+                    VariablesKeys = OptimizationProblem.GetVariables(res.ObjectiveFunction.Formula).ToList();
+                    
+                    if (IsProblemInitialized)
+                    {
+                        //если в новом выражении есть независимые переменные, которые были в старом, то устанавливаем им ограничения первого рода как в старых
+                        var intersectedDecisionVariables = res.DecisionVariables
+                                                              .Where(x => OptimizationProblemVM.DecisionVariables.Any(y => y.Key == x.Key));
+
+                        foreach (var intersectedDecisionVariable in intersectedDecisionVariables)
+                        {
+                            var oldVar = OptimizationProblemVM.DecisionVariables
+                                                              .First(x => x.Key == intersectedDecisionVariable.Key);
+                            intersectedDecisionVariable.FirstRoundConstraint = oldVar.FirstRoundConstraint;
+                        }
+                        OptimizationProblemVM.DecisionVariables = res.DecisionVariables;
+                        //если в новом выражении есть константы, которые были в старом, то утсанавливаем им значение как в старых
+                        var intersectedConstants = res.Constants
+                                                              .Where(x => OptimizationProblemVM.Constants.Any(y => y.Key == x.Key));
+
+                        foreach (var intersectedConstant in intersectedConstants)
+                        {
+                            var oldVar = OptimizationProblemVM.Constants
+                                                              .First(x => x.Key == intersectedConstant.Key);
+                            intersectedConstant.Value = oldVar.Value;
+                        }
+                        OptimizationProblemVM.Constants = res.Constants;
+                        //если старые ограничения второго рода валидны для новой целевой функции, то оставляем их
+
+                        var secondRoundConstraintsToRemove = OptimizationProblemVM.SecondRoundConstraints
+                                                                                  .Where(secondRoundConstraint => OptimizationProblem.GetVariables(secondRoundConstraint.ConstraintFunction.Formula).Any(key => !VariablesKeys.Contains(key)))
+                                                                                  .ToList();
+
+                        foreach (var secondRoundConstraint in secondRoundConstraintsToRemove)
+                        {
+                            OptimizationProblemVM.SecondRoundConstraints.Remove(secondRoundConstraint);
+                        }
+                    }
+                    else
+                    {
+                        OptimizationProblemVM = res;
+                        OptimizationProblemVM.Extremum = Extremum.Max;
+                        OptimizationProblemVM.ObjectiveParameter = ObjectiveParameter;
+                    }
+
+                    OptimizationProblemVM.ObjectiveFunction.Formula = res.ObjectiveFunction.Formula;
+                    IsProblemInitialized = true;
+
                 }
             });
         }

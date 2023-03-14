@@ -22,23 +22,11 @@ public enum Extremum
 
 public class OptimizationProblem : Entity
 {
+    public long UserId { get; set; }
     private readonly FuncExpression _objectiveFunction;
 
     public OptimizationProblem()
     {
-        Constants.CollectionChanged += (sender, args) =>
-        {
-            foreach (var secondRoundConstraint in SecondRoundConstraints)
-            {
-                foreach (Constant staticVariable in args.NewItems)
-                {
-                    if (secondRoundConstraint.ConstraintFunction.GetVariables().Contains(staticVariable.Key))
-                    {
-                        secondRoundConstraint.ConstraintFunction.Bind(staticVariable.Key, staticVariable.Value);
-                    }
-                }
-            }
-        };
     }
 
     public OptimizationProblem(string objectiveFunction, IEnumerable<IVariable> decisionVariables, IEnumerable<IVariable> constants) : this()
@@ -60,11 +48,11 @@ public class OptimizationProblem : Entity
 
     public Extremum Extremum { get; set; }
 
-    public string ProblemText { get; set; }
+    public string? ProblemText { get; set; }
     public string ObjectiveParameter { get; set; }
-    public string ObjectiveFunctionDescription { get; set; }
+    public string? ObjectiveFunctionDescription { get; set; }
 
-    public FuncExpression ObjectiveFunction
+    public virtual FuncExpression ObjectiveFunction
     {
         get => _objectiveFunction;
         init
@@ -74,9 +62,9 @@ public class OptimizationProblem : Entity
         }
     }
 
-    public List<SecondRoundConstraint> SecondRoundConstraints { get; init; } = new();
-    public List<DecisionVariable> DecisionVariables { get; init; } = new();
-    public ObservableCollection<Constant> Constants { get; init; } = new();
+    public virtual List<SecondRoundConstraint> SecondRoundConstraints { get; init; } = new();
+    public virtual List<DecisionVariable> DecisionVariables { get; init; } = new();
+    public virtual List<Constant> Constants { get; init; }
 
 
     public static IEnumerable<string> GetVariables(string expression)
@@ -101,6 +89,10 @@ public class OptimizationProblem : Entity
 
     public double GetValueInPoint(Point point)
     {
+        foreach (var constant in Constants.Where(constant => ObjectiveFunction.GetVariables().Contains(constant.Key)))
+        {
+            ObjectiveFunction.Bind(constant.Key,constant.Value);
+        }
         foreach (var xVariable in point.DecisionVariables)
         {
             ObjectiveFunction.Bind(xVariable.Key, xVariable.Value);
@@ -124,6 +116,13 @@ public class OptimizationProblem : Entity
 
     public bool IsSecondRoundConstraintsSatisfied(Point point)
     {
+        foreach (var secondRoundConstraint in SecondRoundConstraints)
+        {
+            foreach (var staticVariable in Constants.Where(staticVariable => secondRoundConstraint.ConstraintFunction.GetVariables().Contains(staticVariable.Key)))
+            {
+                secondRoundConstraint.ConstraintFunction.Bind(staticVariable.Key, staticVariable.Value);
+            }
+        }
         return SecondRoundConstraints.All(r => r.IsSatisfied(point));
     }
 

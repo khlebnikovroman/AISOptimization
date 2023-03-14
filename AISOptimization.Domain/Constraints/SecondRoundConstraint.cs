@@ -6,7 +6,7 @@ namespace AISOptimization.Domain.Constraints;
 
 public class SecondRoundConstraint : Entity
 {
-    public FuncExpression ConstraintFunction { get; set; }
+    public virtual FuncExpression ConstraintFunction { get; set; }
 
     public bool IsSatisfied(Point point)
     {

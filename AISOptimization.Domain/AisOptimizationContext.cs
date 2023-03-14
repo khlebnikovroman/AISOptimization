@@ -19,9 +19,24 @@ public class AisOptimizationContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder options)
     {
-        options.UseSqlite("Data Source=AisOptimization.db");
+        options
+            .UseLazyLoadingProxies()
+            .UseSqlite("Data Source=AisOptimization.db");
+        
     }
-    
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+        var adminRole = new UserRole() {Id = 1, RoleType = "Admin"};
+        var userRole = new UserRole() {Id = 2, RoleType = "User"};
+        var admin = new User() {Id = 1, UserName = "a", Password = "a", RoleId = adminRole.Id};
+        var researcher = new User() {Id = 2, UserName = "r", Password = "r", RoleId = userRole.Id};
+
+        modelBuilder.Entity<UserRole>().HasData(adminRole, userRole);
+        modelBuilder.Entity<User>().HasData(admin, researcher);
+        
+    }
 }
 
 

@@ -18,6 +18,7 @@ namespace AISOptimization.VMs;
 [AdaptTo("[name]Dto")]
 public class FirstRoundConstraintVM : BaseVM, INotifyDataErrorInfo
 {
+    public long Id { get; set; }
     private double _max = 1;
     private double _min;
     public static List<string> Signs { get; } = new() {"<", "≤",};

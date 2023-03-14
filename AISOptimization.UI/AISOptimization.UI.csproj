@@ -10,6 +10,7 @@
 
     <ItemGroup>
         <PackageReference Include="Autofac" Version="6.5.0" />
+        <PackageReference Include="CalcBinding" Version="2.5.2" />
         <PackageReference Include="ChartDirector.Net.Desktop.Controls" Version="7.0.0" />
         <PackageReference Include="FluentValidation" Version="11.5.1" />
         <PackageReference Include="Mapster" Version="7.3.0" />

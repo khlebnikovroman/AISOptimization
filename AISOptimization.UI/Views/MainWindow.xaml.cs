@@ -14,7 +14,7 @@ namespace AISOptimization.Views;
 /// </summary>
 public partial class MainWindow : INavigationWindow
 {
-    public MainWindow(MainWindowVM vm, IPageService pageService, INavigationService navigationService, IDialogService dialogService)
+    public MainWindow(MainWindowVM vm, IPageService pageService, INavigationService navigationService, IDialogService dialogService, ISnackbarService snackbarService)
     {
         ViewModel = vm;
         DataContext = this;
@@ -22,12 +22,16 @@ public partial class MainWindow : INavigationWindow
         SetPageService(pageService);
         dialogService.SetDialogControl(RootDialog);
         navigationService.SetNavigationControl(RootNavigation);
-
+        snackbarService.SetSnackbarControl(RootSnackBar);
         RootNavigation.MenuItems = new ObservableCollection<object>
         {
             new NavigationViewItem
             {
                 TargetPageType = typeof(OptimizationPage),
+            },
+            new NavigationViewItem
+            {
+                TargetPageType = typeof(LoginPage),
             },
         };
     }

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Text;
 
 using AISOptimization.Domain;
 
@@ -15,6 +16,7 @@ namespace AISOptimization.VMs;
 
 public class OptimizationProblemVM : BaseVM, INotifyDataErrorInfo
 {
+    public long? Id { get; set; }
     public Extremum Extremum { get; set; }
 
     public string ProblemText { get; set; }
@@ -33,6 +35,30 @@ public class OptimizationProblemVM : BaseVM, INotifyDataErrorInfo
 
     public bool HasErrors => DecisionVariables.Any(x => x.FirstRoundConstraint.HasErrors);
     public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
+    public override string ToString()
+    {
+        var sb = new StringBuilder();
+
+        if (!String.IsNullOrEmpty(ObjectiveFunctionDescription))
+        {
+            sb.AppendLine(ObjectiveFunctionDescription);
+        }
+
+        if (!String.IsNullOrEmpty(ObjectiveFunction.Formula))
+        {
+            var x = String.IsNullOrEmpty(ObjectiveParameter) ? ObjectiveParameter : "Целевая функция";
+            sb.AppendLine($"{x} = {ObjectiveFunction.Formula}");
+        }
+        if (DecisionVariables is not null)
+        {
+            foreach (var variable in DecisionVariables)
+            {
+                sb.AppendLine(variable.ToString());
+            }
+        }
+
+        return sb.ToString();
+    }
 }
 
 

@@ -78,7 +78,7 @@ public class ChartDirectorChartVM : BaseVM, IInteractionAware, IDataHolder
 
         for (var x = X.FirstRoundConstraint.Min; x < X.FirstRoundConstraint.Max; x += xStep)
         {
-            for (var y = Y.FirstRoundConstraint.Min; y < Y.FirstRoundConstraint.Max; y += xStep)
+            for (var y = Y.FirstRoundConstraint.Min; y < Y.FirstRoundConstraint.Max; y += yStep)
             {
                 point.DecisionVariables[0].Value = x;
                 point.DecisionVariables[1].Value = y;

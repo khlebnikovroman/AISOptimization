@@ -38,10 +38,14 @@ public partial class App : Application
         builder.RegisterType<NavigationService>().As<INavigationService>().SingleInstance();
         builder.RegisterType<PageService>().As<IPageService>().SingleInstance();
         builder.RegisterType<DialogService>().As<IDialogService>().SingleInstance();
+        builder.RegisterType<UserService>().AsSelf().SingleInstance();
         builder.RegisterType<FrameworkElementFactory>().As<IFrameworkElementFactory>().SingleInstance();
         builder.RegisterType<MyDialogService>().AsSelf().SingleInstance();
         builder.RegisterType<MainWindow>().As<INavigationWindow>().SingleInstance();
-
+        builder.RegisterType<MessageBoxService>().As<IMessageBoxService>();
+        builder.RegisterType<SnackbarService>().As<ISnackbarService>().SingleInstance();
+        builder.RegisterType<AisOptimizationContext>().AsSelf();
+        
         builder.RegisterType<MainWindow>().AsSelf();
         builder.RegisterType<MainWindowVM>().AsSelf();
         builder.RegisterType<OptimizationPage>().AsSelf();
@@ -56,6 +60,12 @@ public partial class App : Application
         builder.RegisterType<ChartDirectorChartVM>().AsSelf();
         builder.RegisterType<ProblemEditControl>().AsSelf();
         builder.RegisterType<ProblemEditControlVM>().AsSelf();
+        builder.RegisterType<LoginPage>().AsSelf();
+        builder.RegisterType<LoginPageVM>().AsSelf();
+        builder.RegisterType<SelectProblemFromBase>().AsSelf();
+        builder.RegisterType<SelectProblemFromBaseVM>().AsSelf();
+        builder.RegisterType<ProblemList>().AsSelf();
+        builder.RegisterType<ProblemListVM>().AsSelf();
         
 
         builder.Register(c => new AutofacAdapter()).As<IServiceProvider>().SingleInstance();
@@ -83,7 +93,7 @@ public partial class App : Application
 
         //navigationWindow.Navigate(typeof(Example));
         var nav = _container.Resolve<INavigationService>();
-        nav.Navigate(typeof(OptimizationPage));
+        nav.Navigate(typeof(LoginPage));
     }
 }
 
