@@ -66,6 +66,10 @@ public partial class App : Application
         builder.RegisterType<SelectProblemFromBaseVM>().AsSelf();
         builder.RegisterType<ProblemList>().AsSelf();
         builder.RegisterType<ProblemListVM>().AsSelf();
+        builder.RegisterType<AdminPage>().AsSelf();
+        builder.RegisterType<AdminPageVM>().AsSelf();
+        builder.RegisterType<UserEditControl>().AsSelf();
+        builder.RegisterType<UserEditVM>().AsSelf();
         
 
         builder.Register(c => new AutofacAdapter()).As<IServiceProvider>().SingleInstance();

@@ -16,6 +16,7 @@ public class AisOptimizationContext : DbContext
     public DbSet<Constant> Constants { get; set; }
     public DbSet<DecisionVariable> DecisionVariables { get; set; }
     public DbSet<User> Users { get; set; }
+    public DbSet<UserRole> UsersRoles { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder options)
     {

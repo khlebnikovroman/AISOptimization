@@ -20,6 +20,16 @@ public class MessageBoxService : IMessageBoxService
         return Show(null, messageBoxText, caption);
     }
 
+    public MessageBoxResult Show(string messageBoxText, string caption, MessageBoxButton button)
+    {
+        return Show(null, messageBoxText, caption, button);
+    }
+
+    public MessageBoxResult Show(string messageBoxText, MessageBoxButton button)
+    {
+        return Show(messageBoxText, "", button);
+    }
+
     public MessageBoxResult Show(Window window, string messageBoxText)
     {
         return Show(window, messageBoxText, null);

@@ -7,6 +7,7 @@ using System.Linq;
 
 using AISOptimization.Domain;
 using AISOptimization.Services;
+using AISOptimization.Utils.Dialog;
 using AISOptimization.Views.Validators;
 using AISOptimization.VMs;
 using AISOptimization.VMs.Validators;
@@ -20,14 +21,16 @@ using Wpf.Ui.Contracts;
 
 namespace AISOptimization.Views.Pages;
 
-public class ProblemEditControlVM:BaseVM,INotifyDataErrorInfo
+public class ProblemEditControlVM : BaseVM, INotifyDataErrorInfo, IInteractionAware, IDataHolder, IResultHolder
 {
     private readonly MyDialogService _dialogService;
     public bool IsProblemInitialized { get; set; }
+
     public ProblemEditControlVM(MyDialogService dialogService)
     {
         _dialogService = dialogService;
     }
+
     public string ObjectiveParameter { get; set; } = "z";
     public string SecondRoundConstraintInput { get; set; }
     public string ObjectiveFunctionInput { get; set; } = "x^2 + y^2";
@@ -43,11 +46,12 @@ public class ProblemEditControlVM:BaseVM,INotifyDataErrorInfo
     public void SetExistingProblem(OptimizationProblemVM problemVm)
     {
         OptimizationProblemVM = problemVm;
-        
+
         if (OptimizationProblemVM.ObjectiveFunction is not null)
         {
             ObjectiveFunctionInput = OptimizationProblemVM.ObjectiveFunction.Formula;
         }
+
         VariablesKeys = OptimizationProblem.GetVariables(OptimizationProblemVM.ObjectiveFunction.Formula).ToList();
         ObjectiveParameter = OptimizationProblemVM.ObjectiveParameter;
         IsProblemInitialized = true;
@@ -58,6 +62,7 @@ public class ProblemEditControlVM:BaseVM,INotifyDataErrorInfo
         OptimizationProblemVM = new OptimizationProblemVM();
         IsProblemInitialized = false;
     }
+
     public RelayCommand InputObjectiveFunction
     {
         get
@@ -65,12 +70,12 @@ public class ProblemEditControlVM:BaseVM,INotifyDataErrorInfo
             return _inputObjectiveFunction ??= new RelayCommand(async o =>
             {
                 var res = await _dialogService.ShowDialog<SelectVariableParametersControl>(ObjectiveFunctionInput) as OptimizationProblemVM;
-                
+
                 //todo вынести это куда-нибудь в более подходящее место
                 if (res != null)
                 {
                     VariablesKeys = OptimizationProblem.GetVariables(res.ObjectiveFunction.Formula).ToList();
-                    
+
                     if (IsProblemInitialized)
                     {
                         //если в новом выражении есть независимые переменные, которые были в старом, то устанавливаем им ограничения первого рода как в старых
@@ -81,24 +86,34 @@ public class ProblemEditControlVM:BaseVM,INotifyDataErrorInfo
                         {
                             var oldVar = OptimizationProblemVM.DecisionVariables
                                                               .First(x => x.Key == intersectedDecisionVariable.Key);
+
                             intersectedDecisionVariable.FirstRoundConstraint = oldVar.FirstRoundConstraint;
                         }
+
                         OptimizationProblemVM.DecisionVariables = res.DecisionVariables;
+
                         //если в новом выражении есть константы, которые были в старом, то утсанавливаем им значение как в старых
                         var intersectedConstants = res.Constants
-                                                              .Where(x => OptimizationProblemVM.Constants.Any(y => y.Key == x.Key));
+                                                      .Where(x => OptimizationProblemVM.Constants.Any(y => y.Key == x.Key));
 
                         foreach (var intersectedConstant in intersectedConstants)
                         {
                             var oldVar = OptimizationProblemVM.Constants
                                                               .First(x => x.Key == intersectedConstant.Key);
+
                             intersectedConstant.Value = oldVar.Value;
                         }
+
                         OptimizationProblemVM.Constants = res.Constants;
+
                         //если старые ограничения второго рода валидны для новой целевой функции, то оставляем их
 
                         var secondRoundConstraintsToRemove = OptimizationProblemVM.SecondRoundConstraints
-                                                                                  .Where(secondRoundConstraint => OptimizationProblem.GetVariables(secondRoundConstraint.ConstraintFunction.Formula).Any(key => !VariablesKeys.Contains(key)))
+                                                                                  .Where(secondRoundConstraint =>
+                                                                                             OptimizationProblem
+                                                                                                 .GetVariables(secondRoundConstraint
+                                                                                                     .ConstraintFunction.Formula)
+                                                                                                 .Any(key => !VariablesKeys.Contains(key)))
                                                                                   .ToList();
 
                         foreach (var secondRoundConstraint in secondRoundConstraintsToRemove)
@@ -120,6 +135,7 @@ public class ProblemEditControlVM:BaseVM,INotifyDataErrorInfo
             });
         }
     }
+
     private RelayCommand _addSecondRoundConstraint;
 
     public RelayCommand AddSecondRoundConstraint
@@ -146,6 +162,7 @@ public class ProblemEditControlVM:BaseVM,INotifyDataErrorInfo
             });
         }
     }
+
     private RelayCommand _removeSecondRoundConstraint;
 
     public RelayCommand RemoveSecondRoundConstraint
@@ -158,6 +175,10 @@ public class ProblemEditControlVM:BaseVM,INotifyDataErrorInfo
             });
         }
     }
+
+
+#region INotifyDataErrorInfo
+
     public IEnumerable GetErrors(string? propertyName)
     {
         var errors = _validator.Validate(this).GetErrors(propertyName);
@@ -165,11 +186,74 @@ public class ProblemEditControlVM:BaseVM,INotifyDataErrorInfo
         return errors;
     }
 
-    public bool HasErrors { get
+    public bool HasErrors
     {
-        var res = _validator.Validate(this);
+        get
+        {
+            var res = _validator.Validate(this);
 
-        return !res.IsValid;
-    } }
+            return !res.IsValid;
+        }
+    }
+
     public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
+
+#endregion
+
+
+#region DialogInterfaces
+
+    public Action FinishInteraction { get; set; }
+    public object Data
+    {
+        get => OptimizationProblemVM;
+        set
+        {
+            var problem = (OptimizationProblemVM) value;
+            if (problem.Id is null)
+            {
+                SetNewProblem();
+            }
+            else
+            {
+                SetExistingProblem(problem);
+            }
+        }
+    }
+    public object Result { get; private set; }
+
+#endregion
+
+
+#region DialogInteraction
+
+    private RelayCommand _applyCommand;
+
+    public RelayCommand ApplyCommand
+    {
+        get
+        {
+            return _applyCommand ??= new RelayCommand(o =>
+            {
+                Result = OptimizationProblemVM;
+                FinishInteraction();
+            });
+        }
+    }
+
+    private RelayCommand _cancelCommand;
+
+    public RelayCommand CancelCommand
+    {
+        get
+        {
+            return _cancelCommand ??= new RelayCommand(o =>
+            {
+                FinishInteraction();
+            });
+        }
+    }
+
+
+#endregion
 }

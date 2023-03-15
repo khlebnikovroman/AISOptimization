@@ -61,8 +61,8 @@ public class LoginPageVM: BaseVM
                 User = user.Adapt<UserVM>();
                 if (user.Role.RoleType=="Admin")
                 {
-                    throw new NotImplementedException();
-                    return;
+                    _navigationService.Navigate(typeof(AdminPage));
+                    _userService.User = User;
                 }
                 if (user.Role.RoleType=="User")
                 {

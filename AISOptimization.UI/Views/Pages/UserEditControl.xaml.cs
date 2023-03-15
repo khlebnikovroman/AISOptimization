@@ -6,16 +6,16 @@ using AISOptimization.Utils.Dialog;
 
 namespace AISOptimization.Views.Pages;
 
-public partial class ProblemEditControl : IViewWithVM<ProblemEditControlVM>, IDialogAware
+public partial class UserEditControl : IViewWithVM<UserEditVM>, IDialogAware
 {
-    public ProblemEditControl(ProblemEditControlVM vm)
+    public UserEditControl(UserEditVM vm)
     {
         ViewModel = vm;
         DataContext = this;
         InitializeComponent();
     }
 
-    public ProblemEditControlVM ViewModel { get; set; }
+    public UserEditVM ViewModel { get; set; }
     public object Footer
     {
         get

@@ -27,6 +27,17 @@
                 <x:Type TypeName="core:Extremum" />
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
+        
+        <StackPanel x:Key="Footer" Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Stretch"
+                    HorizontalAlignment="Center">
+            <ui:Button Margin="5" Width="100" Command="{Binding ViewModel.ApplyCommand}" Content="Выбрать"
+                       Appearance="Primary"
+                       Icon="Add16" />
+            <ui:Button Margin="5" Width="100" Command="{Binding ViewModel.CancelCommand}" Content="Отмена"
+                       Appearance="Secondary"
+                       Icon="Prohibited16" />
+        </StackPanel>
+    
     </UserControl.Resources>
     <ScrollViewer>
                 <StackPanel>

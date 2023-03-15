@@ -1,0 +1,40 @@
+﻿<UserControl x:Class="AISOptimization.Views.Pages.UserEditControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:AISOptimization.Views.Pages"
+             mc:Ignorable="d"
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+             xmlns:controls="clr-namespace:AISOptimization.Controls"
+             d:DataContext="{d:DesignInstance local:UserEditControl}"
+             ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
+             ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <StackPanel x:Key="Footer" Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Stretch"
+                    HorizontalAlignment="Center">
+            <ui:Button Margin="5" Width="100" Command="{Binding ViewModel.ApplyCommand}" Content="Выбрать"
+                       Appearance="Primary"
+                       Icon="Add16" />
+            <ui:Button Margin="5" Width="100" Command="{Binding ViewModel.CancelCommand}" Content="Отмена"
+                       Appearance="Secondary"
+                       Icon="Prohibited16" />
+        </StackPanel>
+    </UserControl.Resources>
+    <Grid>
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+            <controls:LabeledControlPresenter HeaderText="Имя пользователя" Margin="5,8">
+                <ui:TextBox Text="{Binding ViewModel.User.UserName}" PlaceholderText="Введите имя пользователя"/>
+            </controls:LabeledControlPresenter>
+            <controls:LabeledControlPresenter HeaderText="Пароль" Margin="5,8">
+                <ui:TextBox Text="{Binding ViewModel.User.Password}" PlaceholderText="Введите пароль"/>
+            </controls:LabeledControlPresenter>
+            <controls:LabeledControlPresenter HeaderText="Роль пользователя" Margin="5,8">
+                <ComboBox ItemsSource="{Binding ViewModel.UserRoles}"
+                          SelectedItem="{Binding ViewModel.User.UserRole}"
+                          DisplayMemberPath="RoleType"/>
+            </controls:LabeledControlPresenter>
+        </StackPanel>
+    </Grid>
+</UserControl>

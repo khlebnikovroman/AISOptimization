@@ -33,6 +33,10 @@ public partial class MainWindow : INavigationWindow
             {
                 TargetPageType = typeof(LoginPage),
             },
+            new NavigationViewItem
+            {
+                TargetPageType = typeof(AdminPage),
+            }
         };
     }
 
