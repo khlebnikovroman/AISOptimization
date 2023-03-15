@@ -25,6 +25,9 @@ using Wpf.Ui.Contracts;
 
 namespace AISOptimization.Views.Pages;
 
+/// <summary>
+/// VM для <see cref="OptimizationPage"/>
+/// </summary>
 public class OptimizationPageVM : BaseVM, INotifyDataErrorInfo
 {
     private readonly MyDialogService _dialogService;
@@ -65,6 +68,9 @@ public class OptimizationPageVM : BaseVM, INotifyDataErrorInfo
 
     private RelayCommand _selectProblemFromBaseCommand;
 
+    /// <summary>
+    /// Команда для выбора задачи оптимизации из базы данных
+    /// </summary>
     public RelayCommand SelectProblemFromBaseCommand
     {
         get
@@ -84,6 +90,9 @@ public class OptimizationPageVM : BaseVM, INotifyDataErrorInfo
 
     private RelayCommand _createNewOptimizationProblemCommand;
 
+    /// <summary>
+    /// Команда для создания новой задачи потимизации
+    /// </summary>
     public RelayCommand CreateNewOptimizationProblemCommand
     {
         get
@@ -98,6 +107,9 @@ public class OptimizationPageVM : BaseVM, INotifyDataErrorInfo
 
     private RelayCommand _saveCommand;
 
+    /// <summary>
+    /// Сохраняет текущую задачу оптимизации в базу данных
+    /// </summary>
     public RelayCommand SaveCommand
     {
         get
@@ -132,6 +144,9 @@ public class OptimizationPageVM : BaseVM, INotifyDataErrorInfo
     }
 
     
+    /// <summary>
+    /// Команада для запуска процесса оптимизации
+    /// </summary>
     public RelayCommand OptimizeCommand
     {
         get
@@ -143,7 +158,7 @@ public class OptimizationPageVM : BaseVM, INotifyDataErrorInfo
                 var p = method.SolveProblem();
                 var resVM = problem.Adapt<OptimizationProblemVM>().Adapt<OptimizationResultVM>();
                 resVM.DecisionVariables = p.DecisionVariables.Adapt<ObservableCollection<DecisionVariableVM>>();
-                resVM.ObjectiveFunctionResult = problem.GetValueInPoint(p);
+                resVM.ObjectiveFunctionResult = problem.GetValueInPointForDataView(p);
                 OptimizationProblemResult = resVM;
 
                 // var mb = new MessageBox();
@@ -165,6 +180,9 @@ public class OptimizationPageVM : BaseVM, INotifyDataErrorInfo
         }
     }
 
+    /// <summary>
+    /// Команад для отображения окна с графиками
+    /// </summary>
     public RelayCommand ShowPlot
     {
         get

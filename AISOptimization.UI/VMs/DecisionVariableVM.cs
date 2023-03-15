@@ -3,6 +3,9 @@
 
 namespace AISOptimization.VMs;
 
+/// <summary>
+/// VM для <see cref="AISOptimization.Domain.Parameters.DecisionVariable"/>
+/// </summary>
 public class DecisionVariableVM : BaseVM
 {
     public long Id { get; set; }

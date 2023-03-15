@@ -11,6 +11,9 @@ using Wpf.Ui.Controls;
 namespace AISOptimization.Services;
 
 // todo wait until new version of WPF UI release and than replace it
+/// <summary>
+/// Сервис для отображения диалоговых окон
+/// </summary>
 public class MyDialogService
 {
     private readonly IDialogService _dialogService;
@@ -23,6 +26,12 @@ public class MyDialogService
         _elementFactory = elementFactory;
     }
 
+    /// <summary>
+    /// Показать диалоговое окно
+    /// </summary>
+    /// <param name="data">Передаваемые данные</param>
+    /// <typeparam name="T">Тип элемента для отображения в диалоговом окне</typeparam>
+    /// <returns>Результат работы диалогового окна</returns>
     public Task<object?> ShowDialog<T>(object data = null) where T : FrameworkElement, IDialogAware
     {
         var tcs = new TaskCompletionSource<object?>();

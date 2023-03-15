@@ -6,6 +6,9 @@ using FluentValidation;
 
 namespace AISOptimization.Views.Validators;
 
+/// <summary>
+/// Валидатор для <see cref="ProblemEditControlVM"/>
+/// </summary>
 public class ProblemEditControlVMValidator: AbstractValidator<ProblemEditControlVM>
 {
     

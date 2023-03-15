@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+
+using Wpf.Ui.Controls;
 
 using Button = Wpf.Ui.Controls.Button;
 using MessageBox = Wpf.Ui.Controls.MessageBox;
@@ -10,38 +13,40 @@ namespace AISOptimization.Services;
 
 public class MessageBoxService : IMessageBoxService
 {
-    public MessageBoxResult Show(string messageBoxText)
+    
+    public Task<MessageBoxResult> Show(string messageBoxText)
     {
-        return Show(window:null, messageBoxText);
+        return Show(window: null, messageBoxText: messageBoxText);
     }
 
-    public MessageBoxResult Show(string messageBoxText, string caption)
+    public Task<MessageBoxResult> Show(string messageBoxText, string caption)
     {
         return Show(null, messageBoxText, caption);
     }
 
-    public MessageBoxResult Show(string messageBoxText, string caption, MessageBoxButton button)
+    public Task<MessageBoxResult> Show(string messageBoxText, string caption, MessageBoxButton button)
     {
         return Show(null, messageBoxText, caption, button);
     }
 
-    public MessageBoxResult Show(string messageBoxText, MessageBoxButton button)
+    public Task<MessageBoxResult> Show(string messageBoxText, MessageBoxButton button)
     {
         return Show(messageBoxText, "", button);
     }
 
-    public MessageBoxResult Show(Window window, string messageBoxText)
+    public Task<MessageBoxResult> Show(Window window, string messageBoxText)
     {
         return Show(window, messageBoxText, null);
     }
 
-    public MessageBoxResult Show(Window window, string messageBoxText, string caption)
+    public Task<MessageBoxResult> Show(Window window, string messageBoxText, string caption)
     {
         return Show(null, messageBoxText, caption, MessageBoxButton.OK);
     }
 
-    public MessageBoxResult Show(Window window, string messageBoxText, string caption, MessageBoxButton button)
+    public Task<MessageBoxResult> Show(Window window, string messageBoxText, string caption, MessageBoxButton button)
     {
+        var tcs = new TaskCompletionSource<MessageBoxResult>();
         var mb = new MessageBox();
         mb.Owner = window;
         mb.Title = caption;
@@ -49,16 +54,17 @@ public class MessageBoxService : IMessageBoxService
         var result = MessageBoxResult.None;
 
         var footer = new StackPanel
-            {HorizontalAlignment = HorizontalAlignment.Right,};
+            {HorizontalAlignment = HorizontalAlignment.Right, Orientation = Orientation.Horizontal};
 
         void OnButtonClicked(MessageBoxResult buttonResult)
         {
             result = buttonResult;
             mb.Close();
+            tcs.SetResult(result);
         }
 
         var OkButton = new Button
-            {Content = "ОК", Margin = new Thickness(5, 5, 5, 5),};
+            {Content = "ОК", Appearance = ControlAppearance.Primary,Margin = new Thickness(5, 5, 5, 5),};
 
         var CancelButton = new Button
             {Content = "Отмена", Margin = new Thickness(5, 5, 5, 5),};
@@ -103,7 +109,7 @@ public class MessageBoxService : IMessageBoxService
         mb.Footer = footer;
         mb.Show();
 
-        return result;
+        return tcs.Task;
     }
 }
 

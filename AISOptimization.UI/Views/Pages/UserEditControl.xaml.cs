@@ -6,6 +6,9 @@ using AISOptimization.Utils.Dialog;
 
 namespace AISOptimization.Views.Pages;
 
+/// <summary>
+/// Элемент для редактирования пользователя
+/// </summary>
 public partial class UserEditControl : IViewWithVM<UserEditVM>, IDialogAware
 {
     public UserEditControl(UserEditVM vm)

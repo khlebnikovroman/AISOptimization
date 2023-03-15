@@ -5,6 +5,7 @@ using Autofac;
 
 namespace AISOptimization.Services;
 
+
 public class FrameworkElementFactory : IFrameworkElementFactory
 {
     private readonly IComponentContext _container;

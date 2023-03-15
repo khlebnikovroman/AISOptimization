@@ -3,6 +3,9 @@
 
 namespace AISOptimization.Views.Pages;
 
+/// <summary>
+/// Окно исследователя
+/// </summary>
 public partial class OptimizationPage : INavigableView<OptimizationPageVM> 
 {
     public OptimizationPage(OptimizationPageVM vm, ProblemEditControl problemEditControl)

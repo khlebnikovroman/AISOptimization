@@ -3,6 +3,9 @@
 
 namespace AISOptimization.Views.Pages;
 
+/// <summary>
+/// Панель администратора
+/// </summary>
 public partial class AdminPage : INavigableView<AdminPageVM>
 {
     public AdminPage(AdminPageVM vm)

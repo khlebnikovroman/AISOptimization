@@ -6,6 +6,9 @@ using AISOptimization.Domain.Constraints;
 
 namespace AISOptimization.Domain.Parameters;
 
+/// <summary>
+/// Независимая переменная
+/// </summary>
 public class DecisionVariable : Entity, IVariable, ICloneable
 {
     public string? Description { get; set; }

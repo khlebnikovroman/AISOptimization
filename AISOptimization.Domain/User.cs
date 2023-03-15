@@ -3,6 +3,9 @@
 
 namespace AISOptimization.Domain;
 
+/// <summary>
+/// Пользователь
+/// </summary>
 public class User: Entity
 {
     public virtual UserRole Role { get; set; }

@@ -4,6 +4,10 @@
 namespace AISOptimization.Domain.Common;
 
 //https://github.com/vkhorikov/DddAndEFCore/blob/master/src/App/Entity.cs
+
+/// <summary>
+/// Базовое представление сущности
+/// </summary>
 public class Entity
 {
     protected Entity()

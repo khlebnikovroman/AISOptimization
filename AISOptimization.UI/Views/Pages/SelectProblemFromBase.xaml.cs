@@ -6,6 +6,9 @@ using AISOptimization.Utils.Dialog;
 
 namespace AISOptimization.Views.Pages;
 
+/// <summary>
+/// Элемент для отображения задач оптимизации для выбора из бд
+/// </summary>
 public partial class SelectProblemFromBase : IViewWithVM<SelectProblemFromBaseVM>,IDialogAware
 {
     public SelectProblemFromBaseVM ViewModel { get; set; }

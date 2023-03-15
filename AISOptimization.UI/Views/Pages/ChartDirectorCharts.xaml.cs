@@ -7,6 +7,9 @@ using AISOptimization.Utils.Dialog;
 
 namespace AISOptimization.Views.Pages;
 
+/// <summary>
+/// Элемент для отображения <see cref="ChartDirectorSurface"/> и <see cref="ChartDirectorSurfaceProjection"/>
+/// </summary>
 public partial class ChartDirectorCharts : IViewWithVM<ChartDirectorChartVM>, IDialogAware
 {
     public ChartDirectorCharts(ChartDirectorChartVM vm, ChartDirectorSurface surface, ChartDirectorSurfaceProjection projection)

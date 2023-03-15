@@ -1,8 +1,13 @@
 ﻿using System.Collections.Generic;
 
+using AISOptimization.Domain;
+
 
 namespace AISOptimization.VMs;
 
+/// <summary>
+/// VM для <see cref="User"/>
+/// </summary>
 public class UserVM
 {
     public long Id { get; set; }

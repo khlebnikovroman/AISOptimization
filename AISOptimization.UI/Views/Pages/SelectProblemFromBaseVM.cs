@@ -8,9 +8,14 @@ using AISOptimization.VMs;
 
 using Mapster;
 
+using Microsoft.EntityFrameworkCore;
+
 
 namespace AISOptimization.Views.Pages;
 
+/// <summary>
+/// VM для <see cref="SelectProblemFromBase"/>
+/// </summary>
 public class SelectProblemFromBaseVM: IInteractionAware,  IDataHolder, IResultHolder
 {
     private readonly AisOptimizationContext _context;
@@ -38,6 +43,9 @@ public class SelectProblemFromBaseVM: IInteractionAware,  IDataHolder, IResultHo
     public object Result { get; private set; }
     private RelayCommand _selectProblem;
 
+    /// <summary>
+    /// Команда для установуи задачи задачи оптимизации как выбранной пользователем
+    /// </summary>
     public RelayCommand SelectProblem
     {
         get
@@ -52,6 +60,9 @@ public class SelectProblemFromBaseVM: IInteractionAware,  IDataHolder, IResultHo
 
     private RelayCommand _cancelCommand;
 
+    /// <summary>
+    /// Команда для отмены выбора задачи оптимизации
+    /// </summary>
     public RelayCommand CancelCommand
     {
         get

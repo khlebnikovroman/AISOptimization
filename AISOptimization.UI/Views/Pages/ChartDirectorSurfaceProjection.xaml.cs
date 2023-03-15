@@ -10,6 +10,9 @@ using Wpf.Ui.Appearance;
 
 namespace AISOptimization.Views.Pages;
 
+/// <summary>
+/// Элемент для отображения проекции поверхности на плоскость
+/// </summary>
 public partial class ChartDirectorSurfaceProjection : IViewWithVM<ChartDirectorChartVM>
 {
     private ChartDirectorChartVM _viewModel;

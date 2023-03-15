@@ -3,6 +3,9 @@
 
 namespace AISOptimization.VMs.Validators;
 
+/// <summary>
+/// Валидатор для <see cref="FirstRoundConstraintVM"/>
+/// </summary>
 public class FirstRoundConstraintVMValidator : AbstractValidator<FirstRoundConstraintVM>
 {
     public FirstRoundConstraintVMValidator()

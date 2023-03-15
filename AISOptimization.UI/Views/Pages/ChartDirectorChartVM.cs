@@ -21,7 +21,9 @@ public class Point3D
     public double Z { get; set; }
 }
 
-
+/// <summary>
+/// VM для <see cref="ChartDirectorSurface"/>, <see cref="ChartDirectorSurfaceProjection"/> и <see cref="ChartDirectorCharts"/>
+/// </summary>
 public class ChartDirectorChartVM : BaseVM, IInteractionAware, IDataHolder
 {
     private RelayCommand _closeCommand;
@@ -45,7 +47,7 @@ public class ChartDirectorChartVM : BaseVM, IInteractionAware, IDataHolder
     public double[] DataX => Points.Select(x => x.X).ToArray();
     public double[] DataY => Points.Select(x => x.Y).ToArray();
     public double[] DataZ => Points.Select(x => x.Z).ToArray();
-
+    
     public RelayCommand CloseCommand
     {
         get
@@ -56,7 +58,7 @@ public class ChartDirectorChartVM : BaseVM, IInteractionAware, IDataHolder
             });
         }
     }
-
+    
     public object Data
     {
         get => OptimizationResultVM;
@@ -84,7 +86,7 @@ public class ChartDirectorChartVM : BaseVM, IInteractionAware, IDataHolder
                 point.DecisionVariables[1].Value = y;
 
                 Points.Add(new Point3D
-                               {X = x, Y = y, Z = problem.GetValueInPoint(point),});
+                               {X = x, Y = y, Z = problem.GetValueInPointForDataView(point),});
             }
         }
     }

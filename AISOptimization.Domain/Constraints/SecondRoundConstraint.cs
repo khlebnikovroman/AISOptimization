@@ -4,10 +4,18 @@ using AISOptimization.Domain.Parameters;
 
 namespace AISOptimization.Domain.Constraints;
 
+/// <summary>
+/// Ограничение второго рода
+/// </summary>
 public class SecondRoundConstraint : Entity
 {
     public virtual FuncExpression ConstraintFunction { get; set; }
 
+    /// <summary>
+    /// Проверяет, удовлетвоено ли ограничение ывторого рода в точке
+    /// </summary>
+    /// <param name="point">Точка, в которой необходимо проверить удовлетворение условий</param>
+    /// <returns>Результат проверки</returns>
     public bool IsSatisfied(Point point)
     {
         var variables = ConstraintFunction.GetVariables();

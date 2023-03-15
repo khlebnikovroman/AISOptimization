@@ -3,7 +3,9 @@
 
 namespace AISOptimization.Domain.Parameters;
 
-//todo delete
+/// <summary>
+/// Точка
+/// </summary>
 public class Point
 {
     public Point()

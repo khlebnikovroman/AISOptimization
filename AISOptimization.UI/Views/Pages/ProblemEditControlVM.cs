@@ -21,6 +21,9 @@ using Wpf.Ui.Contracts;
 
 namespace AISOptimization.Views.Pages;
 
+/// <summary>
+/// VM для <<see cref="ProblemEditControl"/>
+/// </summary>
 public class ProblemEditControlVM : BaseVM, INotifyDataErrorInfo, IInteractionAware, IDataHolder, IResultHolder
 {
     private readonly MyDialogService _dialogService;
@@ -43,6 +46,10 @@ public class ProblemEditControlVM : BaseVM, INotifyDataErrorInfo, IInteractionAw
 
     public OptimizationProblemVM OptimizationProblemVM { get; private set; }
 
+    /// <summary>
+    /// Задает существующую (в бд) задачу оптимизации как текущую
+    /// </summary>
+    /// <param name="problemVm">Задача оптимизации</param>
     public void SetExistingProblem(OptimizationProblemVM problemVm)
     {
         OptimizationProblemVM = problemVm;
@@ -57,12 +64,18 @@ public class ProblemEditControlVM : BaseVM, INotifyDataErrorInfo, IInteractionAw
         IsProblemInitialized = true;
     }
 
+    /// <summary>
+    /// Задает новую задачу оптимизации как текущую
+    /// </summary>
     public void SetNewProblem()
     {
         OptimizationProblemVM = new OptimizationProblemVM();
         IsProblemInitialized = false;
     }
 
+    /// <summary>
+    /// Команда для воода функции оптимизации
+    /// </summary>
     public RelayCommand InputObjectiveFunction
     {
         get
@@ -138,6 +151,9 @@ public class ProblemEditControlVM : BaseVM, INotifyDataErrorInfo, IInteractionAw
 
     private RelayCommand _addSecondRoundConstraint;
 
+    /// <summary>
+    /// команда для добавления ограничения второго рода
+    /// </summary>
     public RelayCommand AddSecondRoundConstraint
     {
         get
@@ -165,6 +181,9 @@ public class ProblemEditControlVM : BaseVM, INotifyDataErrorInfo, IInteractionAw
 
     private RelayCommand _removeSecondRoundConstraint;
 
+    /// <summary>
+    /// Команда  для удаления ограничения второго рода
+    /// </summary>
     public RelayCommand RemoveSecondRoundConstraint
     {
         get

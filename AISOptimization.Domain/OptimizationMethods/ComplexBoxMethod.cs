@@ -4,6 +4,9 @@ using AISOptimization.Domain.Parameters;
 
 namespace AISOptimization.Domain.OptimizationMethods;
 
+/// <summary>
+/// Метод Бокса
+/// </summary>
 public class ComplexBoxMethod : IOptimizationMethod
 {
     private readonly OptimizationProblem _optimizationProblem;
@@ -22,6 +25,10 @@ public class ComplexBoxMethod : IOptimizationMethod
         vertexCount = varCount <= 5 ? 2 * varCount : varCount + 1;
     }
 
+    /// <summary>
+    /// Находит оптимальное значение функции
+    /// </summary>
+    /// <returns></returns>
     public Point SolveProblem()
     {
         _eps = 0.001;
@@ -60,10 +67,9 @@ public class ComplexBoxMethod : IOptimizationMethod
     }
 
     /// <summary>
-    ///     Формирование исходного комплекса
+    ///     Формирует исходного комплекса
     /// </summary>
-    /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
+    /// <returns>Исходный комплекс</returns>
     private List<Point> GetInitialComplex()
     {
         List<Point> GetRandomPoints()
@@ -127,8 +133,7 @@ public class ComplexBoxMethod : IOptimizationMethod
     /// <summary>
     ///     Определение координат центра Комплекса с отброшенной «наихудшей» вершиной:
     /// </summary>
-    /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
+    /// <returns>Координаты</returns>
     private Point GetGravityCenterWithoutWorstVertex()
     {
         var center = _optimizationProblem.CreatePoint();
@@ -143,10 +148,9 @@ public class ComplexBoxMethod : IOptimizationMethod
     }
 
     /// <summary>
-    ///     среднее расстояние от центра Комплекса до худшей (D) и лучшей (G) вершин
+    ///     Находит среднее расстояние от центра Комплекса до худшей (D) и лучшей (G) вершин
     /// </summary>
-    /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
+    /// <returns>Среднее расстояние от центра Комплекса до худшей (D) и лучшей (G) вершин</returns>
     private double GetB()
     {
         double sum = 0;
@@ -160,6 +164,10 @@ public class ComplexBoxMethod : IOptimizationMethod
         return 1.0 / (2 * _center.DecisionVariables.Count) * sum;
     }
 
+    /// <summary>
+    /// Получает новую точку взамен наихудшей
+    /// </summary>
+    /// <returns>Новая точка</returns>
     private Point GetNewVertexInsteadWorst()
     {
         var newPoint = _optimizationProblem.CreatePoint();
@@ -201,6 +209,11 @@ public class ComplexBoxMethod : IOptimizationMethod
         return newPoint;
     }
 
+    /// <summary>
+    /// Наполовину сдвигает <paramref name="vertex1" к <paramref name="vertex2"/>/>
+    /// </summary>
+    /// <param name="vertex1"></param>
+    /// <param name="vertex2"></param>
     private void HalfShiftVertex1ToVertex2(Point vertex1, Point vertex2)
     {
         for (var i = 0; i < vertex1.DecisionVariables.Count; i++)

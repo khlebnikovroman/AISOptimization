@@ -17,6 +17,9 @@ using Wpf.Ui.Controls;
 
 namespace AISOptimization.Views.Pages;
 
+/// <summary>
+/// Vm для <see cref="LoginPage"/>
+/// </summary>
 public class LoginPageVM: BaseVM
 {
     private readonly AisOptimizationContext _context;

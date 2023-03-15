@@ -3,6 +3,9 @@
 
 namespace AISOptimization.Domain.Parameters;
 
+/// <summary>
+/// Константа
+/// </summary>
 public class Constant : Entity, IVariable
 {
     public string? Description { get; set; }

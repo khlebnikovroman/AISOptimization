@@ -14,6 +14,9 @@ using WPF.Base;
 
 namespace AISOptimization.VMs;
 
+/// <summary>
+/// VM для <see cref="OptimizationProblem"/>
+/// </summary>
 public class OptimizationProblemVM : BaseVM, INotifyDataErrorInfo
 {
     public long? Id { get; set; }

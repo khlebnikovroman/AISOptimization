@@ -6,6 +6,9 @@ using Wpf.Ui.Controls.Navigation;
 
 namespace AISOptimization.Views.Pages;
 
+/// <summary>
+/// Страница входа
+/// </summary>
 public partial class LoginPage : INavigableView<LoginPageVM>
 {
     public LoginPage(LoginPageVM vm)

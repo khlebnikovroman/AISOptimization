@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 
+using AISOptimization.Domain.Constraints;
 using AISOptimization.VMs.Validators;
 
 using FluentValidation;
@@ -15,7 +16,9 @@ using WPF.Base;
 
 namespace AISOptimization.VMs;
 
-[AdaptTo("[name]Dto")]
+/// <summary>
+/// VM для <see cref="FirstRoundConstraint"/>
+/// </summary>
 public class FirstRoundConstraintVM : BaseVM, INotifyDataErrorInfo
 {
     public long Id { get; set; }

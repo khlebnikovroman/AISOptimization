@@ -1,5 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using System.Data.Entity;
 using System.Linq;
 using System.Windows;
 
@@ -9,6 +8,7 @@ using AISOptimization.VMs;
 
 using Mapster;
 
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 using WPF.Base;
@@ -20,6 +20,9 @@ using EntityState = Microsoft.EntityFrameworkCore.EntityState;
 
 namespace AISOptimization.Views.Pages;
 
+/// <summary>
+/// VM для <see cref="AdminPage"/>
+/// </summary>
 public class AdminPageVM: BaseVM
 {
     private readonly MyDialogService _dialogService;
@@ -39,8 +42,8 @@ public class AdminPageVM: BaseVM
 
         _messageBoxService = messageBoxService;
         _snackbarService = snackbarService;
-        OptimizationProblems = _context.OptimizationProblems.AsNoTracking().ToList().Adapt<ObservableCollection<OptimizationProblemVM>>();
-        Users = _context.Users.AsNoTracking().ToList().Adapt<ObservableCollection<UserVM>>();
+        OptimizationProblems = _context.OptimizationProblems.ToList().Adapt<ObservableCollection<OptimizationProblemVM>>();
+        Users = _context.Users.ToList().Adapt<ObservableCollection<UserVM>>();
     }
 
     private RelayCommand _deleteUser;
@@ -49,9 +52,9 @@ public class AdminPageVM: BaseVM
     {
         get
         {
-            return _deleteUser ??= new RelayCommand(o =>
+            return _deleteUser ??= new RelayCommand(async o =>
             {
-                var mbRes = _messageBoxService.Show("Вы действительно хотите удалить выбранного пользователя?", "Предупреждение",
+                var mbRes = await _messageBoxService.Show("Вы действительно хотите удалить выбранного пользователя?", "Предупреждение",
                                                     MessageBoxButton.YesNo);
                 if (mbRes == MessageBoxResult.Yes)
                 {
@@ -116,9 +119,9 @@ public class AdminPageVM: BaseVM
     {
         get
         {
-            return _deleteProblem ??= new RelayCommand(o =>
+            return _deleteProblem ??= new RelayCommand(async o =>
             {
-                var mbRes = _messageBoxService.Show("Вы действительно хотите удалить выбранную задачу?", "Предупреждение",
+                var mbRes = await _messageBoxService.Show("Вы действительно хотите удалить выбранную задачу?", "Предупреждение",
                                                     MessageBoxButton.YesNo);
                 if (mbRes == MessageBoxResult.Yes)
                 {

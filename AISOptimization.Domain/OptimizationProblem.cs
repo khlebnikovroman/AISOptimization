@@ -19,7 +19,9 @@ public enum Extremum
     Max,
 }
 
-
+/// <summary>
+/// задача оптимизации
+/// </summary>
 public class OptimizationProblem : Entity
 {
     public long UserId { get; set; }
@@ -67,18 +69,31 @@ public class OptimizationProblem : Entity
     public virtual List<Constant> Constants { get; init; }
 
 
+    /// <summary>
+    /// Получает все переменные из <paramref name="expression"/>
+    /// </summary>
+    /// <param name="expression">Формула</param>
+    /// <returns>Все переменные</returns>
     public static IEnumerable<string> GetVariables(string expression)
     {
         var e = new Expression(expression);
 
         return e.getVariables();
     }
-
+    /// <summary>
+    /// Получает все переменные текущей задачи/>
+    /// </summary>
+    /// <returns>Все переменные</returns>
     public IEnumerable<string> GetVariables()
     {
         return ObjectiveFunction.GetVariables();
     }
 
+    /// <summary>
+    /// Проверяет ли, является ли выражение <paramref name="expression" валидным/>
+    /// </summary>
+    /// <param name="expression">Выражение</param>
+    /// <returns>Результат проверки</returns>
     public static bool IsValidExpression(string expression)
     {
         var exp = new Expression(expression);
@@ -87,6 +102,11 @@ public class OptimizationProblem : Entity
         return errors.Count == 0;
     }
 
+    /// <summary>
+    /// Получает значение функции в точке <paramref name="point"/>
+    /// </summary>
+    /// <param name="point">Точка, в которой необходимо найти значение функции</param>
+    /// <returns>Значение функции в заданной точке <paramref name="point"/></returns>
     public double GetValueInPoint(Point point)
     {
         foreach (var constant in Constants.Where(constant => ObjectiveFunction.GetVariables().Contains(constant.Key)))
@@ -114,6 +134,24 @@ public class OptimizationProblem : Entity
         }
     }
 
+    public double GetValueInPointForDataView(Point point)
+    {
+        switch (Extremum)
+        {
+            case Extremum.Min:
+                return -GetValueInPoint(point);
+            case Extremum.Max:
+                return GetValueInPoint(point);
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+    }
+
+    /// <summary>
+    /// Проверяет, удовлетворены ли ограничения второго рода в точке <paramref name="point"/>
+    /// </summary>
+    /// <param name="point">Точка, в которой необходимо проверить ограничение второго рода</param>
+    /// <returns>Результат проверки</returns>
     public bool IsSecondRoundConstraintsSatisfied(Point point)
     {
         foreach (var secondRoundConstraint in SecondRoundConstraints)
@@ -126,6 +164,10 @@ public class OptimizationProblem : Entity
         return SecondRoundConstraints.All(r => r.IsSatisfied(point));
     }
 
+    /// <summary>
+    /// Создает новую точку
+    /// </summary>
+    /// <returns>Новая точка</returns>
     public Point CreatePoint()
     {
         var point = new Point();

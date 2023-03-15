@@ -12,7 +12,9 @@ public enum FirstRoundConstraintSatisfactory
     BiggerThanMax,
 }
 
-
+/// <summary>
+/// Ограничение первого рода
+/// </summary>
 public class FirstRoundConstraint : Entity, ICloneable
 {
     private string _biggerSign = "<";
@@ -61,6 +63,11 @@ public class FirstRoundConstraint : Entity, ICloneable
         return MemberwiseClone();
     }
 
+    /// <summary>
+    /// Проверяет, удовлетворены ли ограничения первого рода для заданного числа
+    /// </summary>
+    /// <param name="value">Число</param>
+    /// <returns>Результат проверк</returns>
     public FirstRoundConstraintSatisfactory IsSatisfied(double value)
     {
         switch (LessSign)

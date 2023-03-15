@@ -12,6 +12,9 @@ using WPF.Base;
 
 namespace AISOptimization.Views.Pages;
 
+/// <summary>
+/// VM для <see cref="UserEditControl"/>
+/// </summary>
 public class UserEditVM:BaseVM, IDataHolder,IResultHolder, IInteractionAware
 {
     public UserEditVM(AisOptimizationContext context)

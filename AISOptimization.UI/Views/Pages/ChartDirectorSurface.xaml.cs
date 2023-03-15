@@ -20,7 +20,9 @@ public static class ColorExtension
     }
 }
 
-
+/// <summary>
+/// Элемент для отображения 3D поверхности
+/// </summary>
 public partial class ChartDirectorSurface : IViewWithVM<ChartDirectorChartVM>
 {
     private ChartDirectorChartVM _viewModel;
@@ -56,7 +58,7 @@ public partial class ChartDirectorSurface : IViewWithVM<ChartDirectorChartVM>
     {
         createChart(WPFChartViewer1, 1000, 1500);
     }
-
+    
     public void createChart(WPFChartViewer viewer, int width, int height)
     {
         if (ViewModel.OptimizationResultVM is null)

@@ -6,6 +6,9 @@ using AISOptimization.Utils.Dialog;
 
 namespace AISOptimization.Views.Pages;
 
+/// <summary>
+/// Элемент для редактирования задачи потимизации
+/// </summary>
 public partial class ProblemEditControl : IViewWithVM<ProblemEditControlVM>, IDialogAware
 {
     public ProblemEditControl(ProblemEditControlVM vm)

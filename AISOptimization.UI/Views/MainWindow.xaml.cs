@@ -10,7 +10,7 @@ using Wpf.Ui.Controls.Navigation;
 namespace AISOptimization.Views;
 
 /// <summary>
-///     Interaction logic for MainWindow.xaml
+///    Главное окно программы
 /// </summary>
 public partial class MainWindow : INavigationWindow
 {
