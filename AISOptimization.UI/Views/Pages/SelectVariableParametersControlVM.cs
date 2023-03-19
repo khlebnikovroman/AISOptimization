@@ -9,8 +9,6 @@ using AISOptimization.VMs;
 
 using WPF.Base;
 
-using Constant = AISOptimization.VMs.Constant;
-
 
 namespace AISOptimization.Views.Pages;
 
@@ -47,7 +45,7 @@ public class SelectVariableParametersControlVM : BaseVM, IDataHolder, IResultHol
 
                 var constants = AllParameters
                                 .Where(p => !p.IsVariable)
-                                .Select(p => new Constant
+                                .Select(p => new ConstantVM
                                             {Key = p.Key,});
 
                 _optimizationProblem = new OptimizationProblemVM
@@ -55,7 +53,7 @@ public class SelectVariableParametersControlVM : BaseVM, IDataHolder, IResultHol
                     ObjectiveFunction = new FunctionExpressionVM
                         {Formula = _function,},
                     DecisionVariables = new ObservableCollection<DecisionVariableVM>(decisionVariables),
-                    Constants = new ObservableCollection<Constant>(constants),
+                    Constants = new ObservableCollection<ConstantVM>(constants),
                 };
 
                 Result = _optimizationProblem;

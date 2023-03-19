@@ -101,6 +101,7 @@ public class ProblemEditControlVM : BaseVM, INotifyDataErrorInfo, IInteractionAw
                                                               .First(x => x.Key == intersectedDecisionVariable.Key);
 
                             intersectedDecisionVariable.FirstRoundConstraint = oldVar.FirstRoundConstraint;
+                            intersectedDecisionVariable.Id = oldVar.Id;
                         }
 
                         OptimizationProblemVM.DecisionVariables = res.DecisionVariables;
@@ -115,6 +116,7 @@ public class ProblemEditControlVM : BaseVM, INotifyDataErrorInfo, IInteractionAw
                                                               .First(x => x.Key == intersectedConstant.Key);
 
                             intersectedConstant.Value = oldVar.Value;
+                            intersectedConstant.Id = oldVar.Id;
                         }
 
                         OptimizationProblemVM.Constants = res.Constants;
@@ -229,7 +231,7 @@ public class ProblemEditControlVM : BaseVM, INotifyDataErrorInfo, IInteractionAw
         set
         {
             var problem = (OptimizationProblemVM) value;
-            if (problem.Id is null)
+            if (problem.Id == 0)
             {
                 SetNewProblem();
             }

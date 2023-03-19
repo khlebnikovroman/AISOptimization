@@ -6,7 +6,7 @@ namespace AISOptimization.VMs;
 /// <summary>
 /// VM для <see cref="AISOptimization.Domain.Parameters.Constant"/>
 /// </summary>
-public class Constant : BaseVM
+public class ConstantVM : BaseVM
 {
     public long Id { get; set; }
     public string Description { get; set; }

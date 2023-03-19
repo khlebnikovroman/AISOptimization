@@ -119,7 +119,7 @@
                                         <TextBlock FontSize="15">
                                             <Run Text="{Binding UserName}"/>
                                             <Run Text=" — "/>
-                                            <Run Text="{Binding UserRole.RoleType}"/>
+                                            <Run Text="{Binding Role.RoleType}"/>
                                         </TextBlock>
                                     </StackPanel>
                                 </ui:Card>

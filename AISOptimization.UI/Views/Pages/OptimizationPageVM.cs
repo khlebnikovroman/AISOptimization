@@ -18,6 +18,8 @@ using FluentValidation;
 
 using Mapster;
 
+using Microsoft.EntityFrameworkCore;
+
 using WPF.Base;
 
 using Wpf.Ui.Contracts;
@@ -33,7 +35,7 @@ public class OptimizationPageVM : BaseVM, INotifyDataErrorInfo
     private readonly MyDialogService _dialogService;
     private readonly INavigationService _navigationService;
     private readonly UserService _userService;
-    private readonly AisOptimizationContext _context;
+    private readonly OptimizationProblemService _optimizationProblemService;
     private readonly ISnackbarService _snackbarService;
     private readonly AbstractValidator<OptimizationPageVM> _validator;
 
@@ -50,13 +52,13 @@ public class OptimizationPageVM : BaseVM, INotifyDataErrorInfo
                               AbstractValidator<OptimizationPageVM> validator,
                               INavigationService navigationService, 
                               UserService userService,
-                              AisOptimizationContext context, ISnackbarService snackbarService)
+                              OptimizationProblemService optimizationProblemService, ISnackbarService snackbarService)
     {
         _dialogService = dialogService;
         _validator = validator;
         _navigationService = navigationService;
         _userService = userService;
-        _context = context;
+        _optimizationProblemService = optimizationProblemService;
         _snackbarService = snackbarService;
     }
 
@@ -114,28 +116,21 @@ public class OptimizationPageVM : BaseVM, INotifyDataErrorInfo
     {
         get
         {
-            return _saveCommand ??= new RelayCommand(o =>
+            return _saveCommand ??= new RelayCommand(async o =>
             {
                 //todo вынести логику в сервис
                 
                 if (IsNewProblem)
                 {
-                    var problem = ProblemEditControlVm.OptimizationProblemVM.Adapt<OptimizationProblem>();
-                    problem.UserId = _userService.User.Id;
-                    _context.OptimizationProblems.Add(problem);
-                    _context.SaveChanges();
-                    ProblemEditControlVm.OptimizationProblemVM.Id = problem.Id;
+                    ProblemEditControlVm.OptimizationProblemVM.UserId = _userService.User.Id;
+                    ProblemEditControlVm.OptimizationProblemVM.Id = await _optimizationProblemService.Create(ProblemEditControlVm.OptimizationProblemVM);
                     IsNewProblem = false;
                     _snackbarService.Timeout = 2000;
                     _snackbarService.Show("База данных обновлена", "Задача оптимизации добавлена");
                 }
                 else
                 {
-                    var findedProblem = _context.OptimizationProblems.Find(ProblemEditControlVm.OptimizationProblemVM.Id);
-                    //findedProblem.Adapt(ProblemEditControlVm.OptimizationProblemVM);
-                    ProblemEditControlVm.OptimizationProblemVM.Adapt(findedProblem);
-                    //_context.Update(findedProblem);
-                    _context.SaveChanges();
+                    await _optimizationProblemService.Update(ProblemEditControlVm.OptimizationProblemVM);
                     _snackbarService.Timeout = 2000;
                     _snackbarService.Show("База данных обновлена", "Задача оптимизации обновлена");
                 }
@@ -160,22 +155,6 @@ public class OptimizationPageVM : BaseVM, INotifyDataErrorInfo
                 resVM.DecisionVariables = p.DecisionVariables.Adapt<ObservableCollection<DecisionVariableVM>>();
                 resVM.ObjectiveFunctionResult = problem.GetValueInPointForDataView(p);
                 OptimizationProblemResult = resVM;
-
-                // var mb = new MessageBox();
-                // mb.Title = "Результат  оптимизации";
-                // var sb = new StringBuilder();
-                //
-                // foreach (var variable in p.X)
-                // {
-                //     sb.AppendLine($"{variable.Key}: {variable.Value}");
-                // }
-                //
-                // mb.Content = sb.ToString();
-                // mb.ButtonLeftName = "Ок";
-                // mb.ShowDialog();
-                //
-                // mb.ButtonRightClick += (_, _) => mb.Close();
-                // mb.ButtonLeftClick += (_, _) => mb.Close();
             }, o => ProblemEditControlVm.OptimizationProblemVM is not null && !ProblemEditControlVm.OptimizationProblemVM.HasErrors);
         }
     }

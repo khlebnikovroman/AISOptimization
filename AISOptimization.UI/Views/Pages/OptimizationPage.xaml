@@ -32,7 +32,9 @@
                 <RowDefinition Height="50" />
             </Grid.RowDefinitions>
 
-            <StackPanel>
+            <ScrollViewer>
+                <StackPanel>
+                    
                 <StackPanel Orientation="Horizontal">
                      <ui:Button Command="{Binding ViewModel.SelectProblemFromBaseCommand}"
                          Appearance="Success"
@@ -41,9 +43,7 @@
                                 Icon="DatabaseSearch20"/>
                     <ui:Button Command="{Binding ViewModel.CreateNewOptimizationProblemCommand}" Appearance="Primary" Content="Создать новую задачу" Margin="5" Icon="Add16"/>
                 </StackPanel>
-                <ScrollViewer>
                     <ContentControl x:Name="ProblemEditContentControl"/>
-                </ScrollViewer>
                 <StackPanel Grid.Row="1" Orientation="Horizontal"
                             Visibility="{c:Binding ViewModel.ProblemEditControlVm.IsProblemInitialized, FalseToVisibility=Collapsed}"
                             HorizontalAlignment="Right"
@@ -52,7 +52,9 @@
                     <ui:Button Content="Найти оптимальное значение" Appearance="Primary"
                                Command="{Binding ViewModel.OptimizeCommand}" Margin="8" />
                 </StackPanel>
-            </StackPanel>
+                </StackPanel>
+
+            </ScrollViewer>
             
             
         </Grid>

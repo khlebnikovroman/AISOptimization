@@ -21,8 +21,9 @@ public class AisOptimizationContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder options)
     {
         options
-            .UseLazyLoadingProxies()
-            .UseSqlite("Data Source=AisOptimization.db");
+            //.UseLazyLoadingProxies()
+            .UseSqlite("Data Source=AisOptimization.db")
+            .EnableSensitiveDataLogging(true);
         
     }
 

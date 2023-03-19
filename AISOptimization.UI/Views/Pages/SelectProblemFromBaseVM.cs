@@ -1,50 +1,34 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Linq;
 
-using AISOptimization.Domain;
+using AISOptimization.Services;
 using AISOptimization.Utils.Dialog;
 using AISOptimization.VMs;
-
-using Mapster;
-
-using Microsoft.EntityFrameworkCore;
 
 
 namespace AISOptimization.Views.Pages;
 
 /// <summary>
-/// VM для <see cref="SelectProblemFromBase"/>
+///     VM для <see cref="SelectProblemFromBase" />
 /// </summary>
-public class SelectProblemFromBaseVM: IInteractionAware,  IDataHolder, IResultHolder
+public class SelectProblemFromBaseVM : IInteractionAware, IDataHolder, IResultHolder
 {
-    private readonly AisOptimizationContext _context;
+    private readonly OptimizationProblemService _optimizationProblemService;
 
-    public SelectProblemFromBaseVM(AisOptimizationContext context)
-    {
-        _context = context;
-    }
-    public ProblemListVM ProblemListVm { get; set; }
-    
-    public UserVM User { get; set; }
-    public Action FinishInteraction { get; set; }
-    public object Data
-    {
-        get => User;
-        set
-        {
-            User = (UserVM) value;
-            var userProblems = _context.OptimizationProblems
-                                       .Where(p => p.UserId == User.Id)
-                                       .Adapt<ObservableCollection<OptimizationProblemVM>>();
-            ProblemListVm.OptimizationProblems = userProblems;
-        }
-    }
-    public object Result { get; private set; }
+    private RelayCommand _cancelCommand;
     private RelayCommand _selectProblem;
 
+    public SelectProblemFromBaseVM(OptimizationProblemService optimizationProblemService)
+    {
+        _optimizationProblemService = optimizationProblemService;
+    }
+
+    public ProblemListVM ProblemListVm { get; set; }
+
+    public UserVM User { get; set; }
+
     /// <summary>
-    /// Команда для установуи задачи задачи оптимизации как выбранной пользователем
+    ///     Команда для установуи задачи задачи оптимизации как выбранной пользователем
     /// </summary>
     public RelayCommand SelectProblem
     {
@@ -54,14 +38,12 @@ public class SelectProblemFromBaseVM: IInteractionAware,  IDataHolder, IResultHo
             {
                 Result = ProblemListVm.SelectedOptimizationProblem;
                 FinishInteraction();
-            },_=>ProblemListVm is not null || ProblemListVm.SelectedOptimizationProblem is not null);
+            }, _ => ProblemListVm is not null || ProblemListVm.SelectedOptimizationProblem is not null);
         }
     }
 
-    private RelayCommand _cancelCommand;
-
     /// <summary>
-    /// Команда для отмены выбора задачи оптимизации
+    ///     Команда для отмены выбора задачи оптимизации
     /// </summary>
     public RelayCommand CancelCommand
     {
@@ -74,4 +56,19 @@ public class SelectProblemFromBaseVM: IInteractionAware,  IDataHolder, IResultHo
         }
     }
 
+    public object Data
+    {
+        get => User;
+        set
+        {
+            User = (UserVM) value;
+
+            ProblemListVm.OptimizationProblems = new ObservableCollection<OptimizationProblemVM>(_optimizationProblemService.GetAll(User.Id).Result) ;
+
+        }
+    }
+
+    public Action FinishInteraction { get; set; }
+    public object Result { get; private set; }
 }
+

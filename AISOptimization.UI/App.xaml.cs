@@ -45,6 +45,7 @@ public partial class App : Application
         builder.RegisterType<MessageBoxService>().As<IMessageBoxService>();
         builder.RegisterType<SnackbarService>().As<ISnackbarService>().SingleInstance();
         builder.RegisterType<AisOptimizationContext>().AsSelf();
+        builder.RegisterType<OptimizationProblemService>().AsSelf().SingleInstance();
         
         builder.RegisterType<MainWindow>().AsSelf();
         builder.RegisterType<MainWindowVM>().AsSelf();
@@ -71,6 +72,7 @@ public partial class App : Application
         builder.RegisterType<UserEditControl>().AsSelf();
         builder.RegisterType<UserEditVM>().AsSelf();
         
+        
 
         builder.Register(c => new AutofacAdapter()).As<IServiceProvider>().SingleInstance();
 
@@ -78,6 +80,7 @@ public partial class App : Application
         builder.RegisterType<OptimizationPageVMValidator>().AsSelf();
 
         //todo в отдельную функцию
+        TypeAdapterConfig.GlobalSettings.Default.PreserveReference(true);
         TypeAdapterConfig<OptimizationProblem, OptimizationProblemVM>
             .NewConfig()
             .TwoWays()

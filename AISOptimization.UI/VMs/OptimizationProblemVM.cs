@@ -19,7 +19,8 @@ namespace AISOptimization.VMs;
 /// </summary>
 public class OptimizationProblemVM : BaseVM, INotifyDataErrorInfo
 {
-    public long? Id { get; set; }
+    public long Id { get; set; }
+    public long UserId { get; set; }
     public Extremum Extremum { get; set; }
 
     public string ProblemText { get; set; }
@@ -28,7 +29,7 @@ public class OptimizationProblemVM : BaseVM, INotifyDataErrorInfo
     public FunctionExpressionVM ObjectiveFunction { get; set; }
     public ObservableCollection<SecondRoundConstraintVM> SecondRoundConstraints { get; set; } = new();
     public ObservableCollection<DecisionVariableVM> DecisionVariables { get; set; } = new();
-    public ObservableCollection<Constant> Constants { get; set; } = new();
+    public ObservableCollection<ConstantVM> Constants { get; set; } = new();
     public IValidator<OptimizationProblemVM> Validator { get; set; }
 
     public IEnumerable GetErrors(string? propertyName)

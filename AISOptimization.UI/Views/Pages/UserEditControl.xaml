@@ -32,7 +32,7 @@
             </controls:LabeledControlPresenter>
             <controls:LabeledControlPresenter HeaderText="Роль пользователя" Margin="5,8">
                 <ComboBox ItemsSource="{Binding ViewModel.UserRoles}"
-                          SelectedItem="{Binding ViewModel.User.UserRole}"
+                          SelectedItem="{Binding ViewModel.User.Role}"
                           DisplayMemberPath="RoleType"/>
             </controls:LabeledControlPresenter>
         </StackPanel>

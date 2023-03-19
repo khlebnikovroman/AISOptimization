@@ -22,14 +22,12 @@ namespace AISOptimization.Views.Pages;
 /// </summary>
 public class LoginPageVM: BaseVM
 {
-    private readonly AisOptimizationContext _context;
     private readonly INavigationService _navigationService;
     private readonly IMessageBoxService _messageBoxService;
     private readonly UserService _userService;
 
-    public LoginPageVM(AisOptimizationContext context, INavigationService navigationService, IMessageBoxService messageBoxService, UserService userService)
+    public LoginPageVM(INavigationService navigationService, IMessageBoxService messageBoxService, UserService userService)
     {
-        _context = context;
         _navigationService = navigationService;
         _messageBoxService = messageBoxService;
         _userService = userService;
@@ -42,37 +40,41 @@ public class LoginPageVM: BaseVM
     {
         get
         {
-            return _authorizeCommand ??= new RelayCommand(o =>
+            return _authorizeCommand ??= new RelayCommand(async o =>
             {
-                var user = _context.Users.FirstOrDefault(u => u.UserName == User.UserName);
+
+
+                var user = await _userService.GetByName(User.UserName);
 
                 void showError()
-                {
-                    _messageBoxService.Show("Неверное имя пользователя или пароль", "Ошибка"); 
-                }
-                if (user is null)
-                {
-                    showError();
-                    return;
-                }
-                if (User.Password!=user.Password)
-                {
-                    showError();
-                    return;
-                }
+                    {
+                        _messageBoxService.Show("Неверное имя пользователя или пароль", "Ошибка"); 
+                    }
+                    if (user is null)
+                    {
+                        showError();
+                        return;
+                    }
+                    if (User.Password!=user.Password)
+                    {
+                        showError();
+                        return;
+                    }
 
-                User = user.Adapt<UserVM>();
-                if (user.Role.RoleType=="Admin")
-                {
-                    _navigationService.Navigate(typeof(AdminPage));
-                    _userService.User = User;
-                }
-                if (user.Role.RoleType=="User")
-                {
-                    _navigationService.Navigate(typeof(OptimizationPage));
-                    _userService.User = User;
+                    User = user.Adapt<UserVM>();
+                    if (user.Role.RoleType=="Admin")
+                    {
+                        _navigationService.Navigate(typeof(AdminPage));
+                        _userService.User = User;
+                    }
+                    if (user.Role.RoleType=="User")
+                    {
+                        _navigationService.Navigate(typeof(OptimizationPage));
+                        _userService.User = User;
                     
-                }
+                    }
+                
+                
             }, _ => !String.IsNullOrEmpty(User.UserName) && !String.IsNullOrEmpty(User.Password));
         }
     }

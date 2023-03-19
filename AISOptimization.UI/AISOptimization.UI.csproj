@@ -11,12 +11,11 @@
 
     <ItemGroup>
         <PackageReference Include="Autofac" Version="6.5.0" />
+        <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="8.0.0" />
         <PackageReference Include="CalcBinding" Version="2.5.2" />
         <PackageReference Include="ChartDirector.Net.Desktop.Controls" Version="7.0.0" />
         <PackageReference Include="FluentValidation" Version="11.5.1" />
         <PackageReference Include="Mapster" Version="7.3.0" />
-        <PackageReference Include="Mapster.DependencyInjection" Version="1.0.0" />
-        <PackageReference Include="Mapster.EFCore" Version="5.1.0" />
         <PackageReference Include="PropertyChanged.Fody" Version="4.1.0" />
         <PackageReference Include="WPF-UI" Version="3.0.0-preview.1" />
     </ItemGroup>
@@ -27,11 +26,49 @@
             <XamlRuntime>Wpf</XamlRuntime>
             <SubType>Designer</SubType>
         </Page>
+        <Page Update="Views\Pages\ChartDirectorSurface.xaml">
+          <Generator>MSBuild:Compile</Generator>
+          <DependentUpon>ChartDirectorCharts.xaml</DependentUpon>
+        </Page>
+        <Page Update="Views\Pages\ChartDirectorSurfaceProjection.xaml">
+          <Generator>MSBuild:Compile</Generator>
+          <DependentUpon>ChartDirectorCharts.xaml</DependentUpon>
+        </Page>
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\AISOptimization.Domain\AISOptimization.Domain.csproj" />
         <ProjectReference Include="..\WPF.Base\WPF.Base.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Views\Pages\OptimizationPageVM.cs">
+        <DependentUpon>OptimizationPage.xaml</DependentUpon>
+      </Compile>
+      <Compile Update="Views\Pages\ProblemEditControlVM.cs">
+        <DependentUpon>ProblemEditControl.xaml</DependentUpon>
+      </Compile>
+      <Compile Update="Views\Pages\ProblemListVM.cs">
+        <DependentUpon>ProblemList.xaml</DependentUpon>
+      </Compile>
+      <Compile Update="Views\Pages\SelectProblemFromBaseVM.cs">
+        <DependentUpon>SelectProblemFromBase.xaml</DependentUpon>
+      </Compile>
+      <Compile Update="Views\Pages\SelectVariableParametersControlVM.cs">
+        <DependentUpon>SelectVariableParametersControl.xaml</DependentUpon>
+      </Compile>
+      <Compile Update="Views\Pages\UserEditVM.cs">
+        <DependentUpon>UserEditControl.xaml</DependentUpon>
+      </Compile>
+      <Compile Update="Views\Pages\AdminPageVM.cs">
+        <DependentUpon>AdminPage.xaml</DependentUpon>
+      </Compile>
+      <Compile Update="Views\Pages\ChartDirectorChartVM.cs">
+        <DependentUpon>ChartDirectorCharts.xaml</DependentUpon>
+      </Compile>
+      <Compile Update="Views\Pages\LoginPageVM.cs">
+        <DependentUpon>LoginPage.xaml</DependentUpon>
+      </Compile>
     </ItemGroup>
 
     <!--    <Target Name="Mapster" AfterTargets="AfterBuild">-->
