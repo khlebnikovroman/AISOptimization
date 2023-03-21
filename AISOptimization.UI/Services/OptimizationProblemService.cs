@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using AISOptimization.Domain;
-using AISOptimization.Domain.Migrations;
 using AISOptimization.VMs;
 
 using Mapster;
@@ -72,8 +71,18 @@ public class OptimizationProblemService
     {
         await using var context = _contextCreator();
         var problem = await context.OptimizationProblems
+                                   // .Include(x => x.Constants)
+                                   // .Include(x => x.DecisionVariables)
+                                   // .ThenInclude(x => x.FirstRoundConstraint)
+                                   // .Include(x => x.ObjectiveFunction)
+                                   // .Include(x => x.SecondRoundConstraints)
+                                   // .ThenInclude(x=>x.ConstraintFunction)
                                    .SingleOrDefaultAsync(x=>x.Id == vm.Id);
-        vm.Adapt(problem);
+
+        vm.BuildAdapter()
+          .EntityFromContext(context)
+          .AdaptTo(problem);
+        //vm.Adapt(problem);
         await context.SaveChangesAsync();
     }
 

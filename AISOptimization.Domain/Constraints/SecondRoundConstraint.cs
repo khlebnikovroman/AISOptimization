@@ -9,7 +9,8 @@ namespace AISOptimization.Domain.Constraints;
 /// </summary>
 public class SecondRoundConstraint : Entity
 {
-    public virtual FuncExpression ConstraintFunction { get; set; }
+    public FuncExpression ConstraintFunction { get; set; }
+    public long ConstraintFunctionId { get; set; }
 
     /// <summary>
     /// Проверяет, удовлетвоено ли ограничение ывторого рода в точке

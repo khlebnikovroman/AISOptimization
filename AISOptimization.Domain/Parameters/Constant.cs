@@ -8,6 +8,7 @@ namespace AISOptimization.Domain.Parameters;
 /// </summary>
 public class Constant : Entity, IVariable
 {
+    public long OptimizationProblemId { get; set; }
     public string? Description { get; set; }
     public string Key { get; set; }
 

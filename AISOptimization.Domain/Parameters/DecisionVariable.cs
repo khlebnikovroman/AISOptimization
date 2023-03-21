@@ -12,7 +12,9 @@ namespace AISOptimization.Domain.Parameters;
 public class DecisionVariable : Entity, IVariable, ICloneable
 {
     public string? Description { get; set; }
-    public virtual FirstRoundConstraint FirstRoundConstraint { get; set; }
+    public long OptimizationProblemId { get; set; }
+    public FirstRoundConstraint FirstRoundConstraint { get; set; }
+    public long FirstRoundConstraintId { get; set; }
 
     public object Clone()
     {

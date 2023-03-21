@@ -54,7 +54,8 @@ public class OptimizationProblem : Entity
     public string ObjectiveParameter { get; set; }
     public string? ObjectiveFunctionDescription { get; set; }
 
-    public virtual FuncExpression ObjectiveFunction
+    public long ObjectiveFunctionId { get; set; }
+    public FuncExpression ObjectiveFunction
     {
         get => _objectiveFunction;
         init
@@ -64,9 +65,9 @@ public class OptimizationProblem : Entity
         }
     }
 
-    public virtual List<SecondRoundConstraint> SecondRoundConstraints { get; init; } = new();
-    public virtual List<DecisionVariable> DecisionVariables { get; init; } = new();
-    public virtual List<Constant> Constants { get; init; }
+    public List<SecondRoundConstraint> SecondRoundConstraints { get; init; } = new();
+    public List<DecisionVariable> DecisionVariables { get; init; } = new();
+    public List<Constant> Constants { get; init; }
 
 
     /// <summary>

@@ -26,7 +26,8 @@ namespace AISOptimization.Views.Pages;
 public class AdminPageVM: BaseVM
 {
     private readonly MyDialogService _dialogService;
-    private  AisOptimizationContext _context;
+    private  OptimizationProblemService _optimizationProblemService;
+    private UserService _userService;
     private readonly IMessageBoxService _messageBoxService;
     private readonly ISnackbarService _snackbarService;
 
@@ -35,15 +36,16 @@ public class AdminPageVM: BaseVM
     public OptimizationProblemVM SelectedOptimizationProblem { get; set; }
     public ObservableCollection<UserVM> Users { get; set; }
     public UserVM SelectedUser { get; set; }
-    public AdminPageVM(MyDialogService dialogService, AisOptimizationContext context, IMessageBoxService messageBoxService, ISnackbarService snackbarService)
+    public AdminPageVM(MyDialogService dialogService, AisOptimizationContext context, IMessageBoxService messageBoxService, ISnackbarService snackbarService, OptimizationProblemService optimizationProblemService, UserService userService)
     {
         _dialogService = dialogService;
-        _context = context;
 
         _messageBoxService = messageBoxService;
         _snackbarService = snackbarService;
-        OptimizationProblems = _context.OptimizationProblems.ToList().Adapt<ObservableCollection<OptimizationProblemVM>>();
-        Users = _context.Users.ToList().Adapt<ObservableCollection<UserVM>>();
+        _optimizationProblemService = optimizationProblemService;
+        _userService = userService;
+        OptimizationProblems = _optimizationProblemService.GetAll().Result.Adapt<ObservableCollection<OptimizationProblemVM>>();
+        Users = _userService.GetAll().Result.Adapt<ObservableCollection<UserVM>>();
     }
 
     private RelayCommand _deleteUser;
@@ -58,9 +60,7 @@ public class AdminPageVM: BaseVM
                                                     MessageBoxButton.YesNo);
                 if (mbRes == MessageBoxResult.Yes)
                 {
-                    var user = _context.Users.Find(SelectedUser.Id);
-                    _context.Users.Remove(user);
-                    _context.SaveChanges();
+                    await _userService.Delete(SelectedUser.Id);
                 }
             },_=>SelectedUser is not null);
         }
@@ -80,8 +80,8 @@ public class AdminPageVM: BaseVM
                 {
                     return;
                 }
-                _context.Users.Add(newUser.Adapt<User>());
-                _context.SaveChanges();
+
+                await _userService.Create(newUser);
                 _snackbarService.Timeout = 3000;
                 _snackbarService.Show("База данных обновлена", "Пользователь успешно добавлен");
                 Users.Add(newUser);
@@ -103,9 +103,8 @@ public class AdminPageVM: BaseVM
                 {
                     return;
                 }
-                var user = _context.Users.Find(newUser.Id);
-                newUser.Adapt(user);
-                _context.SaveChanges();
+
+                await _userService.Update(newUser);
                 _snackbarService.Timeout = 3000;
                 _snackbarService.Show("База данных обновлена", "Пользователь успешно отредактирован");
 
@@ -125,9 +124,7 @@ public class AdminPageVM: BaseVM
                                                     MessageBoxButton.YesNo);
                 if (mbRes == MessageBoxResult.Yes)
                 {
-                    var optimizationProblem = _context.OptimizationProblems.Find(SelectedOptimizationProblem.Id);
-                    _context.OptimizationProblems.Remove(optimizationProblem);
-                    _context.SaveChanges();
+                    await _optimizationProblemService.Delete(SelectedOptimizationProblem.Id);
                 }
             },_=>SelectedOptimizationProblem is not null);
         }
@@ -147,10 +144,8 @@ public class AdminPageVM: BaseVM
                 {
                     return;
                 }
-                //todo чинить
-                var problem = _context.OptimizationProblems.Find(newProblem.Id);
-                newProblem.Adapt(problem);
-                _context.SaveChanges();
+
+                await _optimizationProblemService.Update(newProblem);
                 _snackbarService.Timeout = 3000;
                 _snackbarService.Show("База данных обновлена", "Задача успешно отредактирована");
             },_=>SelectedOptimizationProblem is not null);
@@ -172,8 +167,8 @@ public class AdminPageVM: BaseVM
                 {
                     return;
                 }
-                _context.OptimizationProblems.Add(newProblem.Adapt<OptimizationProblem>());
-                _context.SaveChanges();
+
+                await _optimizationProblemService.Create(newProblem);
                 _snackbarService.Timeout = 3000;
                 _snackbarService.Show("База данных обновлена", "Пользователь успешно добавлен");
                 OptimizationProblems.Add(newProblem);
